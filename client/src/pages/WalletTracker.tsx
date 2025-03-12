@@ -156,32 +156,32 @@ const WalletTracker = () => {
         const formattedDate = formatDate(tx.timeStamp);
 
         return (
-            <Card className="p-4 bg-white shadow-sm rounded-lg">
-                <div className="flex flex-col space-y-2">
+            <Card className="p-4 bg-white shadow-sm rounded-3xl border-2 border-black mb-4">
+                <div className="flex flex-col space-y-3">
                     <div className="flex items-center space-x-2">
                         {type === "received" ? (
                             <ArrowDownLeft className="text-green-500" />
                         ) : (
                             <ArrowUpRight className="text-red-500" />
                         )}
-                        <Badge variant={type === "received" ? "default" : "destructive"}>
+                        <Badge variant={type === "received" ? "default" : "destructive"} className="rounded-full font-montserrat">
                             {type === "received" ? "Received" : "Sent"}
                         </Badge>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 font-montserrat">
                         {type === "received" ? "From" : "To"}:{" "}
-                        <span className="text-gray-900">{truncateAddress(type === "received" ? tx.from : tx.to)}</span>
+                        <span className="text-black font-semibold">{truncateAddress(type === "received" ? tx.from : tx.to)}</span>
                     </p>
-                    <p className="text-sm text-gray-500">Date & Time: {formattedDate}</p>
-                    <p className="text-sm text-gray-600">
-                        Value: <span className="font-bold text-indigo-600">{ethValue.toFixed(4)} ETH (${usdValue})</span>
+                    <p className="text-sm text-gray-500 font-montserrat">Date & Time: {formattedDate}</p>
+                    <p className="text-sm text-gray-600 font-montserrat">
+                        Value: <span className="font-bold text-black">{ethValue.toFixed(4)} ETH (${usdValue})</span>
                     </p>
-                    <p className="text-sm text-gray-500">Block: {tx.blockNumber}</p>
+                    <p className="text-sm text-gray-500 font-montserrat">Block: {tx.blockNumber}</p>
                     <a
                         href={`https://etherscan.io/tx/${tx.hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-indigo-600 hover:underline flex items-center space-x-1"
+                        className="text-black hover:underline flex items-center space-x-1 font-montserrat"
                     >
                         <ExternalLink className="h-4 w-4" />
                         <span>View on Etherscan</span>
@@ -192,99 +192,96 @@ const WalletTracker = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-100">
-            <Card className="w-full max-w-2xl shadow-lg border-none rounded-xl overflow-hidden">
-                <CardHeader className="bg-indigo-600 text-white rounded-t-xl">
-                    <CardTitle className="text-center text-2xl font-bold">Ethereum Wallet Tracker</CardTitle>
-                </CardHeader>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-black mb-2 font-montserrat">WALLET TRACKER</h1>
+                <p className="text-gray-600 font-montserrat">Track transactions for any Ethereum wallet address</p>
+            </div>
+
+            <Card className="w-full shadow-lg border-2 border-black rounded-3xl overflow-hidden mb-8">
                 <CardContent className="p-6 space-y-6">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label htmlFor="walletAddress" className="block text-sm font-medium text-gray-700">
-                                Enter Wallet Address
+                            <label htmlFor="walletAddress" className="block text-sm font-medium text-black font-montserrat">
+                                ENTER WALLET ADDRESS
                             </label>
                             <Input
                                 id="walletAddress"
                                 placeholder="e.g., 0xC2d2D05F30Be4f649Dcd9Db6f2D045bE4A3D9ebF"
                                 value={walletAddress}
                                 onChange={(e) => setWalletAddress(e.target.value)}
-                                className="h-12"
+                                className="h-12 rounded-xl border-black"
                             />
                         </div>
-                        <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+                        <Button 
+                            type="submit" 
+                            className="w-full bg-black text-white hover:bg-black/90 font-montserrat rounded-full h-12"
+                        >
                             {loading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Fetching Transactions...
+                                    Loading...
                                 </>
                             ) : (
                                 "Track Wallet"
                             )}
                         </Button>
                     </form>
-
-                    {error && (
-                        <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                    )}
-
-                    {ethPrice && (
-                        <p className="text-sm text-gray-600">
-                            Current ETH Price: <span className="font-bold">${ethPrice.toFixed(2)}</span>
-                        </p>
-                    )}
-
-                    {(receivedTransactions.length > 0 || sentTransactions.length > 0) && (
-                        <Tabs defaultValue="received" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger
-                                    value="received"
-                                    onClick={() => setActiveTab("received")}
-                                    className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
-                                >
-                                    Received
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="sent"
-                                    onClick={() => setActiveTab("sent")}
-                                    className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
-                                >
-                                    Sent
-                                </TabsTrigger>
-                            </TabsList>
-
-                            <TabsContent value="received">
-                                <ScrollArea className="h-[400px] scroll-area">
-                                    <div className="space-y-4">
-                                        {receivedTransactions.map((tx, index) => (
-                                            <TransactionCard key={index} tx={tx} type="received" />
-                                        ))}
-                                    </div>
-                                </ScrollArea>
-                            </TabsContent>
-
-                            <TabsContent value="sent">
-                                <ScrollArea className="h-[400px] scroll-area">
-                                    <div className="space-y-4">
-                                        {sentTransactions.map((tx, index) => (
-                                            <TransactionCard key={index} tx={tx} type="sent" />
-                                        ))}
-                                    </div>
-                                </ScrollArea>
-                            </TabsContent>
-                        </Tabs>
-                    )}
-
-                    {/* Loading indicator for infinite scroll */}
-                    {loading && (
-                        <div className="flex justify-center py-4">
-                            <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
-                        </div>
-                    )}
                 </CardContent>
             </Card>
+
+            {error && (
+                <Alert className="mb-6 border-red-200 bg-red-50 rounded-3xl">
+                    <AlertTitle className="font-montserrat text-red-800">Error</AlertTitle>
+                    <AlertDescription className="font-montserrat text-red-700">{error}</AlertDescription>
+                </Alert>
+            )}
+
+            {(receivedTransactions.length > 0 || sentTransactions.length > 0) && (
+                <Tabs defaultValue="received" className="w-full" onValueChange={(value) => setActiveTab(value as "received" | "sent")}>
+                    <TabsList className="grid w-full grid-cols-2 mb-6 rounded-full bg-gray-100 p-1">
+                        <TabsTrigger value="received" className="rounded-full font-montserrat data-[state=active]:bg-black data-[state=active]:text-white">
+                            Received
+                        </TabsTrigger>
+                        <TabsTrigger value="sent" className="rounded-full font-montserrat data-[state=active]:bg-black data-[state=active]:text-white">
+                            Sent
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="received">
+                        <ScrollArea className="h-[600px]">
+                            {receivedTransactions.length > 0 ? (
+                                receivedTransactions.map((tx, index) => (
+                                    <TransactionCard key={index} tx={tx} type="received" />
+                                ))
+                            ) : (
+                                <div className="text-center py-8 font-montserrat text-gray-500">
+                                    No received transactions found
+                                </div>
+                            )}
+                        </ScrollArea>
+                    </TabsContent>
+                    <TabsContent value="sent">
+                        <ScrollArea className="h-[600px]">
+                            {sentTransactions.length > 0 ? (
+                                sentTransactions.map((tx, index) => (
+                                    <TransactionCard key={index} tx={tx} type="sent" />
+                                ))
+                            ) : (
+                                <div className="text-center py-8 font-montserrat text-gray-500">
+                                    No sent transactions found
+                                </div>
+                            )}
+                        </ScrollArea>
+                    </TabsContent>
+                </Tabs>
+            )}
+
+            {/* Loading indicator for infinite scroll */}
+            {loading && (
+                <div className="flex justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-black" />
+                </div>
+            )}
         </div>
     );
 };

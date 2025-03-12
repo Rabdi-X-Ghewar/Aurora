@@ -1,11 +1,7 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
-import {
-  createPublicClient,
-  http,
-  parseEther,
-} from "viem";
+import { createPublicClient, http, parseEther } from "viem";
 import { holesky } from "viem/chains";
 import { getProvider, getUserAddress } from "./web3Provider.js";
 
@@ -144,12 +140,20 @@ class LidoStakingTool extends DynamicStructuredTool {
 
   async getBalances() {
     try {
-      const userAddress = await getAndValidateAddress(); // Using the helper function
+      const userAddress = await getAndValidateAddress();
       console.log("Fetching balances for address:", userAddress);
 
       const ethBalance = await lidoSDK.core.balanceETH(userAddress);
+      const stakedBalance = await lidoSDK.shares.balance(userAddress);
+
+      // Check if user has more than 1 ETH staked
+      const canVote = Number(stakedBalance) >= 1e18; // 1e18 wei = 1 ETH
+
       return {
         ethBalance: ethBalance.toString(),
+        stakedBalance: stakedBalance.toString(),
+        canVote,
+        votingPower: canVote ? stakedBalance.toString() : "0",
       };
     } catch (error) {
       console.error("Error fetching balances:", error);

@@ -68,6 +68,9 @@ export default {
           green: "#50fa7b",
           purple: "#bd93f9",
         },
+        fontFamily: {
+          montserrat: ["Montserrat", "sans-serif"],
+        },
       },
     },
   },

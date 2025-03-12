@@ -183,36 +183,45 @@ const Profile = () => {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Wallet Dashboard</h1>
-                <p className="text-gray-600">Manage and monitor your connected wallets</p>
+                <h1 className="text-3xl font-bold text-black mb-2 font-montserrat">WALLET DASHBOARD</h1>
+                <p className="text-gray-600 font-montserrat">Manage and monitor your connected wallets</p>
             </div>
-            <div className="mb-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg p-6 text-white">
-                <h2 className="text-2xl font-bold mb-2">Server Wallet</h2>
+            
+            {/* Server Wallet Card */}
+            <div className="mb-8 bg-black rounded-3xl shadow-lg p-6 text-white">
+                <h2 className="text-2xl font-bold mb-4 font-montserrat">SERVER WALLET</h2>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                         <Wallet2 className="w-8 h-8" />
                         <div>
-                            <p className="font-semibold">{truncateAddress(serverWallet?.address || "N/A")}</p>
-                            <p className="text-sm">Balance: {serverWallet?.balance.toFixed(4) || "0.0000"} ETH</p>
+                            <p className="font-semibold font-montserrat">{truncateAddress(serverWallet?.address || "N/A")}</p>
+                            <p className="text-sm font-montserrat">Balance: {serverWallet?.balance.toFixed(4) || "0.0000"} ETH</p>
                         </div>
                     </div>
                     {serverWallet && (
-                        <button onClick={() => handleCopyAddress(serverWallet.address)}>
-                            <Copy className="w-5 h-5 text-white hover:text-gray-200 cursor-pointer" />
+                        <button 
+                            onClick={() => handleCopyAddress(serverWallet.address)}
+                            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                        >
+                            <Copy className="w-5 h-5 text-white" />
                         </button>
                     )}
                 </div>
+                
                 {serverWallet && (
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button
                                 onClick={() => setSelectedWallet(serverWallet)}
-                                className="bg-primary hover:bg-primary/90 text-white"
+                                className="mt-4 bg-white text-black hover:bg-white/90 font-montserrat rounded-full"
                             >
+                                <Send className="w-4 h-4 mr-2" />
                                 Send Transaction
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
+                        
+                        {/* Dialog content remains the same */}
+                        <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
                             <DialogHeader>
                                 <DialogTitle className="text-2xl font-bold">Send Transaction</DialogTitle>
                                 <DialogDescription className="text-muted-foreground">
@@ -289,34 +298,39 @@ const Profile = () => {
                     </Dialog>
                 )}
             </div>
+            
+            {/* Connected Wallets Grid */}
+            <h2 className="text-2xl font-bold mb-4 text-black font-montserrat">CONNECTED WALLETS</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
                 {walletBalances.length > 0 ? (
                     walletBalances.map((wallet, index) => (
                         <div key={index}
-                            className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl border border-gray-100">
+                            className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl border-2 border-black">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center space-x-3">
                                     {getWalletIcon(wallet.clientType || '')}
                                     <div>
-                                        <h3 className="font-semibold text-lg text-gray-900 capitalize">
+                                        <h3 className="font-semibold text-lg text-black capitalize font-montserrat">
                                             {getWalletName(wallet.clientType || '')} Wallet
                                         </h3>
                                         <p className="text-sm text-gray-500 font-mono">
                                             {truncateAddress(wallet.address)}
                                         </p>
-                                        <button onClick={() => handleCopyAddress(wallet.address)}>
-                                            <Copy className="w-4 h-4 text-gray-500 hover:text-gray-700 cursor-pointer" />
+                                        <button 
+                                            onClick={() => handleCopyAddress(wallet.address)}
+                                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                        >
+                                            <Copy className="w-4 h-4 text-gray-500" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center space-x-2 bg-gray-50 rounded-lg p-4">
-                                <Coins className="w-5 h-5 text-blue-600" />
+                            <div className="flex items-center space-x-2 bg-gray-50 rounded-2xl p-4 border border-gray-200">
+                                <Coins className="w-5 h-5 text-black" />
                                 <div>
-                                    <p className="text-sm text-gray-600">Balance</p>
-                                    <p className="font-semibold text-lg">
+                                    <p className="text-sm text-gray-600 font-montserrat">Balance</p>
+                                    <p className="font-semibold text-lg font-montserrat">
                                         {wallet.balance.toFixed(4)} ETH
                                     </p>
                                 </div>
@@ -326,12 +340,15 @@ const Profile = () => {
                                 <DialogTrigger asChild>
                                     <Button
                                         onClick={() => setSelectedWallet(wallet)}
-                                        className="bg-primary hover:bg-primary/90 text-white"
+                                        className="mt-4 w-full bg-black hover:bg-black/90 text-white font-montserrat rounded-full"
                                     >
+                                        <Send className="w-4 h-4 mr-2" />
                                         Send Transaction
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[425px]">
+                                
+                                {/* Dialog content remains the same */}
+                                <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
                                     <DialogHeader>
                                         <DialogTitle className="text-2xl font-bold">Send Transaction</DialogTitle>
                                         <DialogDescription className="text-muted-foreground">
@@ -406,19 +423,17 @@ const Profile = () => {
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
-
-
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-full flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                        <Wallet2 className="w-12 h-12 text-gray-400 mb-3" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-1">No Wallets Connected</h3>
-                        <p className="text-gray-500">Connect a wallet to get started</p>
+                    <div className="col-span-full flex flex-col items-center justify-center p-8 bg-white rounded-3xl border-2 border-dashed border-black">
+                        <Wallet2 className="w-12 h-12 text-black mb-3" />
+                        <h3 className="text-lg font-medium text-black mb-1 font-montserrat">NO WALLETS CONNECTED</h3>
+                        <p className="text-gray-500 font-montserrat">Connect a wallet to get started</p>
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 };
 

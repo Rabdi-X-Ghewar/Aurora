@@ -38,7 +38,7 @@ export default function Login() {
         <>
             {!authenticated &&
                 (
-                    <Button className="px-6 py-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition-colors"
+                    <Button className="px-6 py-2 bg-black text-white rounded-full hover:bg-white hover:text-black transition-colors"
                         onClick={login}>
                         Log In
                     </Button>

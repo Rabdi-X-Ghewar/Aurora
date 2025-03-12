@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Skeleton } from "../components/ui/skeleton";
 import { ScrollArea } from "../components/ui/scroll-area";
-import { WalletIcon, ArrowRightIcon, LampIcon as GasPumpIcon, ClockIcon, HashIcon } from "lucide-react";
+import { WalletIcon, ArrowRightIcon, LampIcon as GasPumpIcon, ClockIcon, HashIcon, Loader2, ExternalLink } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
 import { fetchWallet } from "../apiClient";
 
@@ -121,30 +121,27 @@ const TransactionPage = () => {
     };
 
     return (
-        <div className="container mx-auto py-8 px-4">
-            <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl font-bold tracking-tight">Transaction Explorer</h1>
-                    <p className="text-muted-foreground">
-                        View and analyze your wallet transactions on the Sepolia network
-                    </p>
-                </div>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-black mb-2 font-montserrat">TRANSACTIONS</h1>
+                <p className="text-gray-600 font-montserrat">View and analyze your wallet transactions on the Sepolia network</p>
+            </div>
 
-                <Card className="p-6">
+            <Card className="w-full shadow-lg border-2 border-black rounded-3xl overflow-hidden mb-8">
+                <div className="p-6 space-y-6">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                         <div className="flex-1 w-full">
-
                             <Select value={selectedWallet} onValueChange={setSelectedWallet}>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full h-12 rounded-xl border-black font-montserrat">
                                     <SelectValue placeholder="Select a wallet" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border-black rounded-xl">
                                     {serverWallet && (
-                                        <SelectItem key={serverWallet} value={serverWallet}>
+                                        <SelectItem key={serverWallet} value={serverWallet} className="font-montserrat">
                                             <div className="flex items-center gap-2">
                                                 <WalletIcon className="h-4 w-4" />
                                                 <span>{truncateAddress(serverWallet)}</span>
-                                                <span className="text-muted-foreground text-sm">
+                                                <span className="text-gray-500 text-sm">
                                                     Server Wallet
                                                 </span>
                                             </div>
@@ -152,11 +149,11 @@ const TransactionPage = () => {
                                     )}
 
                                     {wallets.map((wallet) => (
-                                        <SelectItem key={wallet.address} value={wallet.address}>
+                                        <SelectItem key={wallet.address} value={wallet.address} className="font-montserrat">
                                             <div className="flex items-center gap-2">
                                                 <WalletIcon className="h-4 w-4" />
                                                 <span>{truncateAddress(wallet.address)}</span>
-                                                <span className="text-muted-foreground text-sm">
+                                                <span className="text-gray-500 text-sm">
                                                     ({wallet.walletClientType})
                                                 </span>
                                             </div>
@@ -168,73 +165,92 @@ const TransactionPage = () => {
                         <Button
                             onClick={fetchTransactions}
                             disabled={loading || !selectedWallet}
-                            className="w-full sm:w-auto"
+                            className="w-full sm:w-auto bg-black text-white hover:bg-black/90 font-montserrat rounded-full h-12 px-6"
                         >
-                            {loading ? "Loading..." : "Fetch Transactions"}
+                            {loading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Loading...
+                                </>
+                            ) : (
+                                "Fetch Transactions"
+                            )}
                         </Button>
                     </div>
-                </Card>
+                </div>
+            </Card>
 
-                <Card className="relative">
-                    <ScrollArea className="h-[600px] rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead><div className="flex items-center gap-2"><HashIcon className="h-4 w-4" /> Hash</div></TableHead>
-                                    <TableHead>From</TableHead>
-                                    <TableHead>To</TableHead>
-                                    <TableHead>Value (ETH)</TableHead>
-                                    <TableHead><div className="flex items-center gap-2"><GasPumpIcon className="h-4 w-4" /> Gas (Gwei)</div></TableHead>
-                                    <TableHead>Fee (ETH)</TableHead>
-                                    <TableHead><div className="flex items-center gap-2"><ClockIcon className="h-4 w-4" /> Timestamp</div></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {loading ? (
-                                    Array(5).fill(0).map((_, i) => (
-                                        <TableRow key={i}>
-                                            {Array(7).fill(0).map((_, j) => (
-                                                <TableCell key={j}>
-                                                    <Skeleton className="h-4 w-full" />
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    ))
-                                ) : transactions.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="h-24 text-center">
-                                            No transactions found
-                                        </TableCell>
+            <Card className="relative border-2 border-black rounded-3xl overflow-hidden">
+                <ScrollArea className="h-[600px]">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-black text-white">
+                                <TableHead className="font-montserrat"><div className="flex items-center gap-2"><HashIcon className="h-4 w-4" /> Hash</div></TableHead>
+                                <TableHead className="font-montserrat">From</TableHead>
+                                <TableHead className="font-montserrat">To</TableHead>
+                                <TableHead className="font-montserrat">Value (ETH)</TableHead>
+                                <TableHead className="font-montserrat"><div className="flex items-center gap-2"><GasPumpIcon className="h-4 w-4" /> Gas (Gwei)</div></TableHead>
+                                <TableHead className="font-montserrat">Fee (ETH)</TableHead>
+                                <TableHead className="font-montserrat"><div className="flex items-center gap-2"><ClockIcon className="h-4 w-4" /> Timestamp</div></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <TableRow key={i}>
+                                        {Array(7).fill(0).map((_, j) => (
+                                            <TableCell key={j}>
+                                                <Skeleton className="h-4 w-full" />
+                                            </TableCell>
+                                        ))}
                                     </TableRow>
-                                ) : (
-                                    transactions.map((tx, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-mono text-sm">
+                                ))
+                            ) : transactions.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="h-24 text-center">
+                                        <div className="flex flex-col items-center justify-center py-12">
+                                            <WalletIcon className="h-12 w-12 text-gray-300 mb-4" />
+                                            <p className="text-lg font-medium text-black mb-1 font-montserrat">NO TRANSACTIONS FOUND</p>
+                                            <p className="text-gray-500 font-montserrat">Select a wallet and fetch transactions to view them here</p>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                transactions.map((tx, index) => (
+                                    <TableRow key={index} className="hover:bg-gray-50 border-b border-gray-200">
+                                        <TableCell className="font-mono text-sm">
+                                            <a 
+                                                href={`https://sepolia.etherscan.io/tx/${tx.hash}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-black hover:underline flex items-center"
+                                            >
                                                 {truncateAddress(tx.hash)}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    {truncateAddress(tx.from)}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <ArrowRightIcon className="h-4 w-4 text-muted-foreground" />
-                                                    {truncateAddress(tx.to)}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>{parseFloat(tx.value).toFixed(6)}</TableCell>
-                                            <TableCell>{parseFloat(tx.gasPrice).toFixed(2)}</TableCell>
-                                            <TableCell>{parseFloat(tx.fee).toFixed(6)}</TableCell>
-                                            <TableCell>{tx.timestamp}</TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </ScrollArea>
-                </Card>
-            </div>
+                                                <ExternalLink className="h-3 w-3 ml-1" />
+                                            </a>
+                                        </TableCell>
+                                        <TableCell className="font-montserrat">
+                                            <div className="flex items-center gap-2">
+                                                {truncateAddress(tx.from)}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="font-montserrat">
+                                            <div className="flex items-center gap-2">
+                                                <ArrowRightIcon className="h-4 w-4 text-gray-400" />
+                                                {truncateAddress(tx.to)}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="font-montserrat font-medium">{parseFloat(tx.value).toFixed(6)}</TableCell>
+                                        <TableCell className="font-montserrat">{parseFloat(tx.gasPrice).toFixed(2)}</TableCell>
+                                        <TableCell className="font-montserrat">{parseFloat(tx.fee).toFixed(6)}</TableCell>
+                                        <TableCell className="font-montserrat text-sm">{tx.timestamp}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </ScrollArea>
+            </Card>
         </div>
     );
 };

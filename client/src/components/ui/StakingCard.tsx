@@ -27,8 +27,8 @@ interface StakingCardProps {
   account: string;
 }
 
-const INFURA_API_KEY = "00d918690e7246579fb6feabe829e5c8"; // Replace with your Infura API Key
-const network = "sepolia"; // or "goerli", "polygon", etc.
+// const INFURA_API_KEY = "00d918690e7246579fb6feabe829e5c8"; // Replace with your Infura API Key
+// const network = "sepolia"; // or "goerli", "polygon", etc.
 
 export const StakingCard: React.FC<StakingCardProps> = ({
   web3Provider,
@@ -247,30 +247,33 @@ export const StakingCard: React.FC<StakingCardProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-black border border-[#50fa7b]/30 shadow-[0_0_10px_rgba(80,250,123,0.2)]">
+    <Card className="w-full max-w-md mx-auto bg-white border-2 border-black rounded-xl">
       <CardHeader>
-        <CardTitle className="text-[#50fa7b] font-mono">
-          Stake/Withdraw ETH with Lido
-        </CardTitle>
-        <CardDescription className="text-white/70 font-mono">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="h-6 w-1 bg-black"></div>
+          <CardTitle className="text-black font-bold font-montserrat">
+            Stake/Withdraw ETH with Lido
+          </CardTitle>
+        </div>
+        <CardDescription className="text-black/70 font-montserrat">
           Stake your ETH to earn staking rewards or withdraw your staked ETH
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-mono text-[#50fa7b]">
+            <label className="text-sm font-montserrat text-black font-medium">
               Amount (ETH)
             </label>
             <div className="flex gap-4">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <span className="text-sm text-white/70 font-mono">
+                    <span className="text-sm text-black/70 font-montserrat">
                       Balance: {balance} ETH
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-black border border-[#50fa7b]/30 text-white">
+                  <TooltipContent className="bg-white border-2 border-black text-black font-montserrat">
                     Your ETH Balance
                   </TooltipContent>
                 </Tooltip>
@@ -278,11 +281,11 @@ export const StakingCard: React.FC<StakingCardProps> = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <span className="text-sm text-white/70 font-mono">
+                    <span className="text-sm text-black/70 font-montserrat">
                       Staked: {stakedBalance} stETH
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-black border border-[#50fa7b]/30 text-white">
+                  <TooltipContent className="bg-white border-2 border-black text-black font-montserrat">
                     Your Staked ETH Balance
                   </TooltipContent>
                 </Tooltip>
@@ -297,9 +300,9 @@ export const StakingCard: React.FC<StakingCardProps> = ({
             disabled={isLoading || isWithdrawing}
             min="0"
             step="0.01"
-            className="bg-black border-[#50fa7b]/30 text-white font-mono placeholder:text-white/30 focus:border-[#50fa7b] focus:ring-[#50fa7b]/20"
+            className="bg-white border-2 border-black text-black font-montserrat placeholder:text-black/30 focus:border-black focus:ring-black/20"
           />
-          <div className="text-sm text-white/70 font-mono">
+          <div className="text-sm text-black/70 font-montserrat">
             Daily Staking Limit: {stakingLimit} ETH
           </div>
           <div className="space-y-2">
@@ -307,7 +310,7 @@ export const StakingCard: React.FC<StakingCardProps> = ({
               onClick={() => handleEstimateGas("stake")}
               variant="outline"
               disabled={!amount}
-              className="w-full mb-2 border-[#50fa7b]/30 text-[#50fa7b] hover:bg-[#50fa7b]/10 hover:text-[#50fa7b] font-mono bg-transparent"
+              className="w-full mb-2 border-2 border-black text-black hover:bg-gray-50 font-montserrat bg-white"
             >
               Estimate Stake Gas
             </Button>
@@ -315,25 +318,25 @@ export const StakingCard: React.FC<StakingCardProps> = ({
               onClick={() => handleEstimateGas("withdraw")}
               variant="outline"
               disabled={!amount}
-              className="w-full border-[#50fa7b]/30 text-[#50fa7b] hover:bg-[#50fa7b]/10 hover:text-[#50fa7b] font-mono bg-transparent"
+              className="w-full border-2 border-black text-black hover:bg-gray-50 font-montserrat bg-white"
             >
               Estimate Withdraw Gas
             </Button>
           </div>
           {gasEstimate && (
-            <div className="text-sm text-white/70 font-mono">
+            <div className="text-sm text-black/70 font-montserrat">
               Estimated Gas: {gasEstimate} ETH
             </div>
           )}
           {status && (
-            <div className="p-3 rounded-lg bg-black border border-[#50fa7b]/30">
-              <p className="text-sm text-white/90 font-mono">{status}</p>
+            <div className="p-3 rounded-xl bg-white border-2 border-black">
+              <p className="text-sm text-black font-montserrat">{status}</p>
               {txHash && (
                 <a
                   href={`https://sepolia.etherscan.io/tx/${txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-[#50fa7b] hover:underline font-mono mt-2 block"
+                  className="text-xs text-black hover:underline font-montserrat mt-2 block"
                 >
                   View on Etherscan
                 </a>
@@ -346,7 +349,7 @@ export const StakingCard: React.FC<StakingCardProps> = ({
         <Button
           onClick={handleStake}
           disabled={isLoading || isWithdrawing || !amount}
-          className="flex-1 bg-[#50fa7b]/10 text-[#50fa7b] border border-[#50fa7b]/30 hover:bg-[#50fa7b]/20 font-mono"
+          className="flex-1 bg-black text-white font-montserrat hover:bg-gray-900 transition-colors"
         >
           {isLoading ? "Staking..." : "Stake ETH"}
         </Button>
@@ -354,11 +357,10 @@ export const StakingCard: React.FC<StakingCardProps> = ({
           onClick={handleWithdraw}
           disabled={isLoading || isWithdrawing || !amount}
           variant="outline"
-          className="flex-1 border-[#50fa7b]/30 text-[#50fa7b] hover:bg-[#50fa7b]/10 font-mono bg-transparent"
+          className="flex-1 border-2 border-black text-black hover:bg-gray-50 font-montserrat bg-white"
         >
           {isWithdrawing ? "Withdrawing..." : "Withdraw ETH"}
         </Button>
       </CardFooter>
     </Card>
-  );
-};
+)};

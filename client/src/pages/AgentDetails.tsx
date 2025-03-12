@@ -17,7 +17,9 @@ import {
 } from "../components/ui/AgentCards";
 import { Message } from "../types/AgentInterfaces";
 import { StakingCard } from "../components/ui/StakingCard";
-import { LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
+import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
+import { createPublicClient, http } from "viem";
+import { holesky } from "viem/chains";
 
 const PLUTUS_ASCII = `
 ██████╗ ██╗     ██╗   ██╗████████╗██╗   ██╗███████╗
@@ -40,6 +42,9 @@ const AgentDetails: React.FC = () => {
   const chainId = 17000;
   const embeddedWallet =
     wallets.find((wallet) => wallet.walletClientType === "privy") || wallets[0];
+  const [votingPower, setVotingPower] = useState<string>("0");
+  const [canVote, setCanVote] = useState<boolean>(false);
+  const RPC_URL = "https://ethereum-holesky.publicnode.com";
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -81,7 +86,6 @@ const AgentDetails: React.FC = () => {
   useEffect(() => {
     // Connect to WebSocket
     ws.current = new WebSocket("ws://localhost:3000");
-
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -155,6 +159,40 @@ const AgentDetails: React.FC = () => {
     return () => ws.current?.close();
   }, []);
 
+  useEffect(() => {
+    const checkVotingPower = async () => {
+      if (authenticated && embeddedWallet && user?.wallet?.address) {
+        try {
+          const rpcProvider = createPublicClient({
+            chain: holesky,
+            transport: http(RPC_URL),
+          });
+          const provider = LidoSDKCore.createWeb3Provider(
+            chainId,
+            window.ethereum
+          );
+          const lidoSDK = new LidoSDK({
+            chainId: chainId,
+            rpcProvider,
+            web3Provider: provider,
+          });
+
+          const stakedBalance = await lidoSDK.shares.balance(
+            user.wallet.address as `0x${string}`
+          );
+
+          const hasVotingPower = Number(stakedBalance) >= 1e18; // 1 ETH in wei
+          setVotingPower(stakedBalance.toString());
+          setCanVote(hasVotingPower);
+        } catch (error) {
+          console.error("Error checking voting power:", error);
+        }
+      }
+    };
+
+    checkVotingPower();
+  }, [authenticated, embeddedWallet, user?.wallet?.address]);
+
   const handleSendMessage = () => {
     if (!input.trim() || !ws.current) return;
 
@@ -222,18 +260,18 @@ const AgentDetails: React.FC = () => {
   const renderMessage = (msg: Message) => {
     if (msg.type === "user") {
       return (
-        <div className="font-mono text-white/90">
-          <span className="text-[#50fa7b]">user@plutus</span>
-          <span className="text-white/70">:~$</span>
+        <div className="font-mono text-black/90">
+          <span className="text-black/30">user@plutus</span>
+          <span className="text-black/70">:~$</span>
           <span className="ml-2">{msg.content}</span>
         </div>
       );
     } else {
       return (
         <div className="font-mono">
-          <span className="text-[#bd93f9]">plutus@ai</span>
-          <span className="text-white/70">:~$</span>
-          <div className="mt-1 text-white/90 pl-4">
+          <span className="text-black/70">plutus@ai</span>
+          <span className="text-black/30">:~$</span>
+          <div className="mt-1 text-black/90 pl-4">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               className="whitespace-pre-wrap"
@@ -247,28 +285,46 @@ const AgentDetails: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full h-screen bg-black">
+    <div className="flex w-full h-screen bg-white">
       {/* Chat Interface */}
-      <div className="w-[570px] border-r border-white/20 bg-black flex flex-col h-full shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+      <div className="w-[570px] border-r border-black/20 bg-white flex flex-col h-full shadow-md">
         <div className="flex flex-col">
-          <pre
-            className="text-[#50fa7b] p-4 text-xs font-mono whitespace-pre select-none"
-            style={{ textShadow: "0 0 5px rgba(80, 250, 123, 0.5)" }}
-          >
-            {PLUTUS_ASCII}
-          </pre>
+          <div className="flex items-center justify-between p-4 border-b border-black/20">
+            <pre
+              className="text-black text-xs font-mono whitespace-pre select-none"
+              style={{ textShadow: "0 0 1px rgba(0, 0, 0, 0.2)" }}
+            >
+              {PLUTUS_ASCII}
+            </pre>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-black/70 hover:text-black hover:bg-black/10 rounded-full h-8 w-8 p-0"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </div>
 
-          <div className="text-white/70 px-4 pb-2 text-sm font-mono border-b border-white/20">
-            Usage: Type your message to interact with the AI Assistant
+          <div className="bg-white px-4 py-3 text-sm font-mono border-b border-black/20 flex items-center">
+            <div className="h-3 w-3 rounded-full bg-black mr-2 animate-pulse"></div>
+            <span className="text-black/70">Terminal connected • Type your message to interact with the AI Assistant</span>
           </div>
         </div>
 
         <ScrollArea className="flex-1 p-4 font-mono">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
+            {messages.length === 0 && (
+              <div className="text-center py-10">
+                <div className="text-black/50 font-mono text-sm mb-2">No messages yet</div>
+                <div className="text-black/30 font-mono text-xs">Start typing to interact with Plutus AI</div>
+              </div>
+            )}
+            
             {messages.map((msg, index) => (
-              <div key={index} className="terminal-line">
+              <div key={index} className={`terminal-line ${msg.type === 'ai' ? 'pl-0' : 'pl-0'} `}>
                 {renderMessage(msg)}
-                <span className="text-xs text-white/30 mt-1 block">
+                <span className="text-xs text-black/30 mt-1 block">
                   {formatTimestamp(msg.timestamp)}
                 </span>
               </div>
@@ -277,47 +333,78 @@ const AgentDetails: React.FC = () => {
           </div>
         </ScrollArea>
 
-        <div className="border-t border-white/20 bg-black p-4">
-          <div className="flex items-center gap-2 font-mono">
-            <span className="text-[#50fa7b]">user@plutus</span>
-            <span className="text-white/70">:~$</span>
+        <div className="border-t border-black/20 bg-white p-4">
+          <div className="flex items-center gap-2 font-mono text-black bg-white rounded-lg p-2 border-2 border-black focus-within:border-black transition-colors">
+            <span className="text-black font-bold">user@plutus</span>
+            <span className="text-black/70">:~$</span>
             <Input
-              placeholder=""
+              placeholder="Type your command..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               disabled={isLoading}
-              className="flex-1 bg-transparent border-none text-white placeholder:text-white/50 focus:outline-none focus:ring-0 font-mono"
+              className="flex-1 bg-transparent border-none text-black placeholder:text-black/30 focus:outline-none focus:ring-0 font-mono"
             />
             <Button
               onClick={handleSendMessage}
               size="icon"
               disabled={isLoading}
-              className="bg-transparent hover:bg-white/10 text-white"
+              className="bg-black text-white hover:bg-black/90 rounded-md h-8 w-8"
             >
-              <Send className="h-4 w-4" />
+              {isLoading ? (
+                <div className="h-4 w-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
       </div>
 
       {/* Right Side - Explore and Cards */}
-      <div className="flex-1 flex flex-col gap-6 p-6 bg-black">
-        <div className="flex-1 overflow-y-auto">
-          <div
-            className="text-xl font-semibold text-white mb-4"
-            style={{ textShadow: "0 0 10px rgba(255,255,255,0.5)" }}
-          >
-            Explore
+      <div className="flex-1 flex flex-col p-6 bg-white overflow-hidden">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center">
+              <div
+                className="text-2xl font-bold text-black font-montserrat tracking-tight"
+              >
+                EXPLORE
+              </div>
+              <div className="ml-2 h-1 w-16 bg-black"></div>
+            </div>
+            
+            {canVote && (
+              <Button
+                onClick={() => (window.location.href = "/voting")}
+                className="bg-black hover:bg-black/80 text-white font-bold rounded-full px-6 font-montserrat"
+              >
+                GO TO VOTING
+                <span className="ml-2 text-xs bg-white/20 px-2 py-1 rounded-full">
+                  {(parseFloat(votingPower) / 1e18).toFixed(4)} stETH
+                </span>
+              </Button>
+            )}
           </div>
-          <div className="space-y-4">
+          
+          {!currentCard && (
+            <div className="border-2 border-black rounded-xl bg-white p-8 text-center">
+              <div className="text-black/70 font-montserrat mb-2">No data to display</div>
+              <div className="text-black/40 text-sm font-montserrat">
+                Ask the AI assistant about staking assets, agents, or Ethereum metrics
+              </div>
+            </div>
+          )}
+          
+          <div className="space-y-6">
             {renderCard()}
 
             {/* Staking Card moved inside explore section */}
             {authenticated && embeddedWallet && (
-              <div className="border border-white/20 rounded-lg bg-black shadow-[0_0_10px_rgba(255,255,255,0.3)] p-4 mt-6">
-                <div className="text-lg font-semibold text-white mb-4">
-                  Staking
+              <div className="border-2 border-black rounded-xl bg-white shadow-md p-6 mt-6 transition-all hover:bg-gray-50">
+                <div className="text-xl font-bold text-black font-montserrat mb-4 flex items-center">
+                  <div className="h-6 w-1 bg-black mr-3"></div>
+                  STAKING
                 </div>
                 <StakingCard
                   web3Provider={LidoSDKCore.createWeb3Provider(
@@ -325,13 +412,30 @@ const AgentDetails: React.FC = () => {
                     window.ethereum
                   )}
                   account={user?.wallet?.address || ""}
-
                 />
               </div>
             )}
           </div>
         </div>
       </div>
+      
+      {/* Replace the style jsx global with regular CSS classes */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.05);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 0, 0, 0.3);
+        }
+      `}} />
     </div>
   );
 };

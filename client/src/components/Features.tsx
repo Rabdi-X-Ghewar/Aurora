@@ -1,59 +1,52 @@
-import { Wallet, Globe, Zap, ArrowRight } from 'lucide-react';
+import { motion } from "framer-motion";
 
-const Features = () => {
-  const features = [
-    {
-      icon: <Wallet className="w-12 h-12 text-emerald-400" />,
-      title: "Pluto Wallet",
-      description: "Use our secure wallet inside any app with seamless integration",
-      action: "Explore Pluto Wallet",
-    },
-    {
-      icon: <Globe className="w-12 h-12 text-emerald-400" />,
-      title: "Browser Extension",
-      description: "Connect Pluto Wallet to any dApps in your browser",
-      action: "Install Extension",
-    },
-    {
-      icon: <Zap className="w-12 h-12 text-emerald-400" />,
-      title: "Pluto Bridge",
-      description: "Bridge assets between blockchains seamlessly",
-      action: "Explore Bridge",
-    },
-  ];
-
+export default function Features() {
   return (
-    <div className="py-20 bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-gray-100">Powerful Features</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Everything you need to manage your digital assets in one place
+    <section className="bg-background py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-6">
+            Advanced DeFi Management
+          </h2>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+            Plutus combines AI-powered insights with cross-chain capabilities.
+            Manage your DeFi operations seamlessly across Sonic and other
+            networks with our intelligent agent system.
           </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-gray-700 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 group hover:-translate-y-1"
+          <motion.div
+            className="mt-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <a
+              href="/dashboard"
+              className="apple-button inline-flex items-center"
             >
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-6 transform group-hover:scale-110 transition-transform">
-                  {feature.icon}
-                </div>
-                <h3 className="text-2xl font-bold mb-4 text-gray-100">{feature.title}</h3>
-                <p className="text-gray-400 mb-6">{feature.description}</p>
-                <button className="group/btn px-6 py-3 bg-gradient-to-r from-emerald-400 to-teal-400 text-gray-900 rounded-full hover:shadow-lg hover:shadow-emerald-500/20 transition-all duration-300 font-semibold inline-flex items-center">
-                  {feature.action}
-                  <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+              Launch Dashboard
+              <svg
+                className="w-5 h-5 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </a>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
-};
-
-export default Features;
+}

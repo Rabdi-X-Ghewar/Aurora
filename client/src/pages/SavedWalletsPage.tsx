@@ -197,138 +197,172 @@ const SavedWalletsPage = () => {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Saved Wallets</h1>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-black mb-2 font-montserrat">SAVED WALLETS</h1>
+                <p className="text-gray-600 font-montserrat">Manage your saved wallet addresses</p>
+            </div>
 
             {/* Add Wallet Button */}
-            <Button onClick={() => setIsAddWalletDialogOpen(true)} className="mb-4">
-                Add Wallet
+            <Button 
+                onClick={() => setIsAddWalletDialogOpen(true)} 
+                className="mb-8 bg-black text-white hover:bg-black/90 font-montserrat rounded-full px-6 py-2"
+            >
+                Add New Wallet
             </Button>
 
             <Dialog open={isAddWalletDialogOpen} onOpenChange={setIsAddWalletDialogOpen}>
-                <DialogContent>
+                <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
                     <DialogHeader>
-                        <DialogTitle>Add Wallet</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="font-montserrat text-xl">Add Wallet</DialogTitle>
+                        <DialogDescription className="font-montserrat">
                             Enter a nickname and wallet address to save the wallet.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                         <div>
-                            <Label>Nickname</Label>
+                            <Label className="font-montserrat">Nickname</Label>
                             <Input
                                 type="text"
                                 value={newWalletNickname}
                                 onChange={(e) => setNewWalletNickname(e.target.value)}
-                                className="mt-1"
+                                className="mt-1 rounded-xl border-black"
                             />
                         </div>
                         <div>
-                            <Label>Wallet Address</Label>
+                            <Label className="font-montserrat">Wallet Address</Label>
                             <Input
                                 type="text"
                                 value={newWalletAddress}
                                 onChange={(e) => setNewWalletAddress(e.target.value)}
-                                className="mt-1"
+                                className="mt-1 rounded-xl border-black"
                             />
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsAddWalletDialogOpen(false)}>
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setIsAddWalletDialogOpen(false)}
+                            className="rounded-full font-montserrat"
+                        >
                             Cancel
                         </Button>
-                        <Button onClick={handleSaveWallet}>Save Wallet</Button>
+                        <Button 
+                            onClick={handleSaveWallet}
+                            className="bg-black text-white hover:bg-black/90 rounded-full font-montserrat"
+                        >
+                            Save Wallet
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-            {/* Saved Wallets List */}
-            <div className="space-y-2">
+            {/* Saved Wallets Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {savedWallets.length > 0 ? (
                     savedWallets.map((wallet, index) => (
                         <div
                             key={index}
-                            className="flex justify-between items-center border p-2 rounded"
+                            className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl border-2 border-black"
                         >
-                            <div>
-                                <p className="font-semibold">{wallet.nickname}</p>
-                                <p className="text-sm text-gray-500">
-                                    {truncateAddress(wallet.address)}
-                                </p>
-                            </div>
-
-                            {/* Dialog for Sending Transaction */}
-                            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                                <DialogTrigger asChild>
-                                    <Button
-                                        onClick={() => {
-                                            setDestinationAddress(wallet.address);
-                                        }}
-                                    >
-                                        Send Transaction
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Send Transaction</DialogTitle>
-                                        <DialogDescription>
-                                            Enter the amount and select a wallet to send ETH.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <Label>From</Label>
-                                            <select
-                                                className="mt-1 block w-full border rounded p-2"
-                                                onChange={(e) =>
-                                                    setSelectedWallet(
-                                                        walletBalances.find(
-                                                            (wallet) => wallet.address === e.target.value
-                                                        ) || serverWallet?.address === e.target.
-                                                            value
-                                                            ? serverWallet
-                                                            : null
-                                                    )
-                                                }
-                                            >
-                                                <option value="">Select a wallet</option>
-                                                <option value={serverWallet?.address}>
-                                                    Server Wallet - ({serverWallet?.balance.toFixed(4)} ETH)
-                                                </option>
-                                                {walletBalances.map((wallet, index) => (
-                                                    <option key={index} value={wallet.address}>
-                                                        {getWalletName(wallet.clientType || '')} -
-                                                        {truncateAddress(wallet.address)} (
-                                                        {wallet.balance.toFixed(4)} ETH)
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <Label>Amount (ETH)</Label>
-                                            <Input
-                                                type="number"
-                                                value={amount}
-                                                onChange={(e) => setAmount(e.target.value)}
-                                                className="mt-1"
-                                            />
-                                        </div>
-                                    </div>
-                                    <DialogFooter>
+                            <div className="flex flex-col space-y-4">
+                                <div>
+                                    <h3 className="text-xl font-semibold text-black font-montserrat">{wallet.nickname}</h3>
+                                    <p className="text-gray-500 font-mono mt-1">
+                                        {truncateAddress(wallet.address)}
+                                    </p>
+                                </div>
+                                
+                                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                                    <DialogTrigger asChild>
                                         <Button
-                                            variant="outline"
-                                            onClick={() => setOpenDialog(false)}
+                                            onClick={() => {
+                                                setDestinationAddress(wallet.address);
+                                            }}
+                                            className="w-full bg-black text-white hover:bg-black/90 font-montserrat rounded-full mt-4"
                                         >
-                                            Cancel
+                                            Send Transaction
                                         </Button>
-                                        <Button onClick={sendTransaction}>Send Transaction</Button>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
+                                        <DialogHeader>
+                                            <DialogTitle className="font-montserrat text-xl">Send Transaction</DialogTitle>
+                                            <DialogDescription className="font-montserrat">
+                                                Enter the amount and select a wallet to send ETH.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <Label className="font-montserrat">From</Label>
+                                                <select
+                                                    className="mt-1 block w-full border border-black rounded-xl p-2 font-montserrat"
+                                                    onChange={(e) =>
+                                                        setSelectedWallet(
+                                                            walletBalances.find(
+                                                                (wallet) => wallet.address === e.target.value
+                                                            ) || serverWallet?.address === e.target.value
+                                                                ? serverWallet
+                                                                : null
+                                                        )
+                                                    }
+                                                >
+                                                    <option value="">Select a wallet</option>
+                                                    <option value={serverWallet?.address}>
+                                                        Server Wallet - ({serverWallet?.balance.toFixed(4)} ETH)
+                                                    </option>
+                                                    {walletBalances.map((wallet, index) => (
+                                                        <option key={index} value={wallet.address}>
+                                                            {getWalletName(wallet.clientType || '')} -
+                                                            {truncateAddress(wallet.address)} (
+                                                            {wallet.balance.toFixed(4)} ETH)
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <Label className="font-montserrat">Amount (ETH)</Label>
+                                                <Input
+                                                    type="number"
+                                                    value={amount}
+                                                    onChange={(e) => setAmount(e.target.value)}
+                                                    className="mt-1 rounded-xl border-black"
+                                                />
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setOpenDialog(false)}
+                                                className="rounded-full font-montserrat"
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button 
+                                                onClick={sendTransaction}
+                                                className="bg-black text-white hover:bg-black/90 rounded-full font-montserrat"
+                                            >
+                                                Send Transaction
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
                         </div>
                     ))
                 ) : (
-                    <p>No wallets saved yet.</p>
+                    <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white rounded-3xl border-2 border-dashed border-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                        <h3 className="text-lg font-medium text-black mb-1 font-montserrat">NO WALLETS SAVED</h3>
+                        <p className="text-gray-500 font-montserrat text-center">Add a wallet address to get started</p>
+                        <Button 
+                            onClick={() => setIsAddWalletDialogOpen(true)} 
+                            className="mt-6 bg-black text-white hover:bg-black/90 font-montserrat rounded-full"
+                        >
+                            Add Your First Wallet
+                        </Button>
+                    </div>
                 )}
             </div>
         </div>

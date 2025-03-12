@@ -12,27 +12,28 @@ import {
 export const StakingAssetsCard: React.FC<{ assets: Asset[] }> = ({
   assets,
 }) => (
-  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+  <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     {assets.map((asset, idx) => (
       <div
         key={idx}
-        className="bg-black border border-[#50fa7b]/30 shadow-[0_0_10px_rgba(80,250,123,0.2)] rounded-xl p-4 hover:shadow-[0_0_15px_rgba(80,250,123,0.3)] transition-shadow"
+        className="border-2 border-black rounded-xl bg-white p-6 transition-all hover:bg-gray-50"
       >
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-6 w-1 bg-black"></div>
           <img
             src={asset.logo}
             alt={asset.name}
-            className="w-12 h-12 rounded-full border border-[#50fa7b]/30"
+            className="w-12 h-12 rounded-lg border-2 border-black"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = "/fallback-asset-image.png";
             }}
           />
-          <h3 className="font-mono text-[#50fa7b] text-lg">{asset.name}</h3>
+          <h3 className="text-xl font-bold text-black font-montserrat">{asset.name}</h3>
         </div>
-        <div className="flex justify-between items-center font-mono">
-          <span className="text-white/70">APR</span>
-          <span className="text-[#50fa7b]">{asset.rewardRate}%</span>
+        <div className="flex justify-between items-center">
+          <span className="text-black/70 font-montserrat">APR</span>
+          <span className="text-black font-bold font-montserrat">{asset.rewardRate}%</span>
         </div>
       </div>
     ))}
@@ -42,27 +43,28 @@ export const StakingAssetsCard: React.FC<{ assets: Asset[] }> = ({
 export const ProvidersCard: React.FC<{ providers: Provider[] }> = ({
   providers,
 }) => (
-  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+  <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     {providers.map((provider, idx) => (
       <div
         key={idx}
-        className="bg-black border border-[#50fa7b]/30 shadow-[0_0_10px_rgba(80,250,123,0.2)] rounded-xl p-4 hover:shadow-[0_0_15px_rgba(80,250,123,0.3)] transition-shadow"
+        className="border-2 border-black rounded-xl bg-white p-6 transition-all hover:bg-gray-50"
       >
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-6 w-1 bg-black"></div>
           <img
             src={provider.logo}
             alt={provider.name}
-            className="w-12 h-12 rounded-full border border-[#50fa7b]/30"
+            className="w-12 h-12 rounded-lg border-2 border-black"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = "/fallback-provider-image.png";
             }}
           />
-          <h3 className="font-mono text-[#50fa7b] text-lg">{provider.name}</h3>
+          <h3 className="text-xl font-bold text-black font-montserrat">{provider.name}</h3>
         </div>
-        <div className="flex justify-between items-center font-mono">
-          <span className="text-white/70">AUM</span>
-          <span className="text-[#50fa7b]">{provider.aum}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-black/70 font-montserrat">AUM</span>
+          <span className="text-black font-bold font-montserrat">{provider.aum}</span>
         </div>
       </div>
     ))}
@@ -72,24 +74,27 @@ export const ProvidersCard: React.FC<{ providers: Provider[] }> = ({
 export const AgentDetailsCard: React.FC<{ data: AgentDetails }> = ({
   data,
 }) => (
-  <div className="bg-black border border-[#50fa7b]/30 shadow-[0_0_10px_rgba(80,250,123,0.2)] rounded-xl p-6">
-    <h2 className="text-2xl font-mono text-[#50fa7b] mb-6">{data.agentName}</h2>
-    <div className="grid grid-cols-2 gap-4">
-      <div className="p-4 bg-black border border-[#50fa7b]/30 rounded-lg">
-        <p className="text-sm text-white/70 font-mono">Mindshare</p>
-        <p className="text-lg text-[#50fa7b] font-mono">{data.mindshare}%</p>
+  <div className="border-2 border-black rounded-xl bg-white p-6">
+    <div className="flex items-center mb-6">
+      <div className="h-6 w-1 bg-black mr-3"></div>
+      <h2 className="text-2xl font-bold text-black font-montserrat">{data.agentName}</h2>
+    </div>
+    <div className="grid grid-cols-2 gap-6">
+      <div className="border-2 border-black rounded-xl p-4">
+        <p className="text-black/70 font-montserrat mb-1">Mindshare</p>
+        <p className="text-xl font-bold text-black font-montserrat">{data.mindshare}%</p>
       </div>
-      <div className="p-4 bg-black border border-[#50fa7b]/30 rounded-lg">
-        <p className="text-sm text-white/70 font-mono">Market Cap</p>
-        <p className="text-lg text-[#50fa7b] font-mono">{data.marketCap}</p>
+      <div className="border-2 border-black rounded-xl p-4">
+        <p className="text-black/70 font-montserrat mb-1">Market Cap</p>
+        <p className="text-xl font-bold text-black font-montserrat">{data.marketCap}</p>
       </div>
-      <div className="p-4 bg-black border border-[#50fa7b]/30 rounded-lg">
-        <p className="text-sm text-white/70 font-mono">Price</p>
-        <p className="text-lg text-[#50fa7b] font-mono">{data.price}</p>
+      <div className="border-2 border-black rounded-xl p-4">
+        <p className="text-black/70 font-montserrat mb-1">Price</p>
+        <p className="text-xl font-bold text-black font-montserrat">{data.price}</p>
       </div>
-      <div className="p-4 bg-black border border-[#50fa7b]/30 rounded-lg">
-        <p className="text-sm text-white/70 font-mono">Holders</p>
-        <p className="text-lg text-[#50fa7b] font-mono">{data.holdersCount}</p>
+      <div className="border-2 border-black rounded-xl p-4">
+        <p className="text-black/70 font-montserrat mb-1">Holders</p>
+        <p className="text-xl font-bold text-black font-montserrat">{data.holdersCount}</p>
       </div>
     </div>
   </div>
@@ -152,8 +157,9 @@ export const EthereumMetricsCard: React.FC<{ data: EthereumMetrics }> = ({
 
 // Error Card Component
 export const ErrorCard: React.FC<{ message: string }> = ({ message }) => (
-  <div className="bg-black border border-red-500/30 shadow-[0_0_10px_rgba(255,0,0,0.2)] rounded-xl p-6">
+  <div className="border-2 border-red-500 rounded-xl bg-white p-6">
     <div className="flex items-center gap-3 text-red-500 mb-4">
+      <div className="h-6 w-1 bg-red-500"></div>
       <svg
         className="w-6 h-6"
         fill="none"
@@ -167,9 +173,9 @@ export const ErrorCard: React.FC<{ message: string }> = ({ message }) => (
           d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <h3 className="font-mono text-lg">Error Loading Data</h3>
+      <h3 className="text-xl font-bold font-montserrat">Error Loading Data</h3>
     </div>
-    <p className="text-white/70 font-mono">{message}</p>
+    <p className="text-black/70 font-montserrat">{message}</p>
   </div>
 );
 
