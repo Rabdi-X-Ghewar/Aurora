@@ -18,50 +18,45 @@ import { toast } from "sonner";
 function App() {
   const navigate = useNavigate();
   const { authenticated, user } = usePrivy();
+  
   useEffect(() => {
     if (authenticated) {
       addUserToDatabase(user);
     }
   }, [user]);
-  // console.log(JSON.stringify(user));
-  const { wallets } = useWallets();
-  console.log(JSON.stringify(wallets));
+
   const loginSuccess = () => {
     toast.success("Open Campus Connect Successful");
     navigate("/profile");
   };
+
   const loginError = () => {
     toast.error("Open Campus Connect Failed");
     navigate("/profile");
   };
+
   return (
     <>
-      {authenticated ? <HomeAfterLogin /> : <Home />}
-      <div className="ml-64">
-        <Routes>
-          {authenticated && (
-            <>
-              <Route path="/" element={<Navigate to="/profile" replace />} />
-              <Route
-                path="/redirect"
-                element={
-                  <LoginCallBack
-                    errorCallback={loginError}
-                    successCallback={loginSuccess}
-                    customErrorComponent={undefined}
-                    customLoadingComponent={undefined}
-                  />
-                }
-              />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/watcher" element={<WalletTracker />} />
-              <Route path="/saved-wallets" element={<SavedWalletsPage />} />
-              <Route path="/transactions" element={<TransactionPage />} />
-              <Route path="/chat-bot" element={<AgentDetails />} />
-            </>
-          )}
-        </Routes>
-      </div>
+      {authenticated ? (
+        <HomeAfterLogin />
+      ) : (
+        <>
+          <Home />
+          <Routes>
+            <Route
+              path="/redirect"
+              element={
+                <LoginCallBack
+                  errorCallback={loginError}
+                  successCallback={loginSuccess}
+                  customErrorComponent={undefined}
+                  customLoadingComponent={undefined}
+                />
+              }
+            />
+          </Routes>
+        </>
+      )}
     </>
   );
 }

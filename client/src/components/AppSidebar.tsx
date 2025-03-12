@@ -12,6 +12,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Link } from "react-router";
+import { useSidebar } from "./ui/sidebar";
 
 const sidebarItems = [
     { icon: LayoutGrid, label: "Dashboard", href: "/profile" },
@@ -25,6 +26,7 @@ const sidebarItems = [
 ]
 
 export function AppSidebar() {
+    const { state } = useSidebar();
     const { logout, user, linkWallet } = usePrivy();
     const { wallets } = useWallets()
     
@@ -42,8 +44,8 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton asChild size="lg">
                             <Link to="/" className="flex items-center gap-2">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black group-hover:bg-gray-900 transition-colors">
-                                    <Wallet className="h-5 w-5 text-white" />
+                                <div className={`flex ${state === "collapsed" ? "h-8 w-8" : "h-10 w-10"} items-center justify-center rounded-full bg-black group-hover:bg-gray-900 transition-all`}>
+                                    <Wallet className={`${state === "collapsed" ? "h-4 w-4" : "h-5 w-5"} text-white`} />
                                 </div>
                                 <span className="font-bold text-xl font-montserrat">PLUTUS</span>
                             </Link>

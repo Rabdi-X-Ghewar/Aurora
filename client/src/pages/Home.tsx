@@ -11,7 +11,6 @@ const Home = () => {
       <Navbar />
       <main>
         <ExploreSection />
-
         <Features />
         <Footer />
       </main>

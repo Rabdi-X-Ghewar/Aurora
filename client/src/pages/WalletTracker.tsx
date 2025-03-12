@@ -156,6 +156,7 @@ const WalletTracker = () => {
         const formattedDate = formatDate(tx.timeStamp);
 
         return (
+            
             <Card className="p-4 bg-white shadow-sm rounded-3xl border-2 border-black mb-4">
                 <div className="flex flex-col space-y-3">
                     <div className="flex items-center space-x-2">
