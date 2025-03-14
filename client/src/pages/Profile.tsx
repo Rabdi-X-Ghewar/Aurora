@@ -1,27 +1,43 @@
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
-import { getWalletBalance } from "../lib/fetchWalletBalance";
-import { Wallet2, CreditCard, Coins, Copy, Send, Wallet } from "lucide-react";
+import { getWalletBalance, SUPPORTED_NETWORKS, NetworkKey } from "../lib/fetchWalletBalance";
+import { Wallet2, CreditCard, Coins, Copy, Send, Wallet, Globe } from "lucide-react";
 import { fetchWallet, sendServerTransaction } from "../apiClient";
 import { toast } from "sonner";
-
 import { createWalletClient, custom, Hex, parseEther } from 'viem';
-import { sepolia } from 'viem/chains';
-
+import {
+    mainnet,
+    sepolia,
+    goerli,
+    polygonMumbai,
+    polygon,
+    arbitrum,
+    optimism,
+    holesky
+} from 'viem/chains';
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
-
-
-
-
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { ethers } from "ethers";
 
 export type WalletBalance = {
     address: string;
     clientType?: string;
     balance: number;
+    network?: NetworkKey;
+};
+
+const CHAIN_MAP = {
+    ethereum: mainnet,
+    sepolia: sepolia,
+    goerli: goerli,
+    mumbai: polygonMumbai,
+    polygon: polygon,
+    arbitrum: arbitrum,
+    optimism: optimism,
+    holesky: holesky
 };
 
 const getWalletIcon = (clientType: string) => {
@@ -44,9 +60,9 @@ const getWalletIcon = (clientType: string) => {
                 </defs>
             </svg>;
         case 'privy':
-            return <Wallet2 className="w-8 h-8 text-purple-600" />;
+            return <Wallet2 className="w-8 h-8 text-primary" />;
         default:
-            return <CreditCard className="w-8 h-8 text-gray-600" />;
+            return <CreditCard className="w-8 h-8 text-muted-foreground" />;
     }
 };
 
@@ -71,12 +87,12 @@ const Profile = () => {
     const { wallets } = useWallets();
     const { user } = usePrivy();
     const [walletBalances, setWalletBalances] = useState<WalletBalance[]>([]);
-    const [serverWallet, setServerWallet] = useState<{ address: string; balance: number } | null>(null);
+    const [serverWallet, setServerWallet] = useState<{ address: string; balance: number; network?: NetworkKey } | null>(null);
     const [selectedWallet, setSelectedWallet] = useState<WalletBalance | undefined>(undefined);
     const [destinationAddress, setDestinationAddress] = useState('');
     const [amount, setAmount] = useState('');
     const [open, setOpen] = useState(false);
-
+    const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey>('sepolia');
 
 
     useEffect(() => {
@@ -85,11 +101,12 @@ const Profile = () => {
                 try {
                     const balances = await Promise.all(
                         wallets.map(async (wallet) => {
-                            const balance = await getWalletBalance(wallet.address);
+                            const balanceResult = await getWalletBalance(wallet.address, selectedNetwork);
                             return {
                                 address: wallet.address,
                                 clientType: wallet.walletClientType,
-                                balance: balance ? parseFloat(balance) : 0
+                                balance: balanceResult ? parseFloat(balanceResult.balance) : 0,
+                                network: selectedNetwork
                             };
                         })
                     );
@@ -103,11 +120,12 @@ const Profile = () => {
         const fetchServerWalletData = async () => {
             try {
                 const wallet = await fetchWallet(user?.email?.address!);
-                const serverWalletAddress = wallet.wallet.address; // Replace with actual server wallet address
-                const balance = await getWalletBalance(serverWalletAddress);
+                const serverWalletAddress = wallet.wallet.address;
+                const balanceResult = await getWalletBalance(serverWalletAddress, selectedNetwork);
                 setServerWallet({
                     address: serverWalletAddress,
-                    balance: balance ? parseFloat(balance) : 0,
+                    balance: balanceResult ? parseFloat(balanceResult.balance) : 0,
+                    network: selectedNetwork
                 });
             } catch (error) {
                 console.error("Error fetching server wallet balance:", error);
@@ -115,9 +133,8 @@ const Profile = () => {
         };
 
         fetchServerWalletData();
-
         fetchWalletData();
-    }, [wallets]);
+    }, [wallets, selectedNetwork]);
 
     const handleCopyAddress = async (address: string) => {
         try {
@@ -129,26 +146,55 @@ const Profile = () => {
         }
     };
 
-
     const sendTransaction = async () => {
-        if (!selectedWallet) return;
+        if (!selectedWallet || !selectedNetwork) return;
 
         try {
+            // Validate destination address
+            if (!ethers.isAddress(destinationAddress)) {
+                toast.error("Invalid destination address");
+                return;
+            }
+
+            // Validate amount
+            const parsedAmount = parseFloat(amount);
+            if (isNaN(parsedAmount) || parsedAmount <= 0) {
+                toast.error("Invalid transaction amount");
+                return;
+            }
+
             if (selectedWallet.address === serverWallet?.address) {
-                // Call server wallet transaction
-                const hash = await sendServerTransaction(user?.email?.address!, destinationAddress, amount);
+                // Server wallet transaction
+                const hash = await sendServerTransaction(
+                    user?.email?.address!,
+                    destinationAddress,
+                    amount,
+                );
+
                 if (hash) {
-                    toast.success("Server wallet transaction successful");
-                    setOpen(false)
+                    toast.success(`Server wallet transaction successful on ${SUPPORTED_NETWORKS[selectedNetwork].name}`);
+                    setOpen(false);
                 }
             } else {
+                // Connected wallet transaction
                 const wallet = wallets.find(wallet => wallet.address === selectedWallet.address);
                 if (!wallet) {
                     console.error('Wallet not found');
                     return;
                 }
 
-                await wallet.switchChain(sepolia.id);
+                // Get the corresponding chain for the selected network
+                const chain = CHAIN_MAP[selectedNetwork as keyof typeof CHAIN_MAP];
+                console.log("Selected chain:", chain);
+                if (!chain) {
+                    toast.error(`Unsupported network: ${selectedNetwork}`);
+                    return;
+                }
+
+                // Switch to the selected chain
+                await wallet.switchChain(chain.id);
+
+                console.log("Chain switched to:", chain.id);
                 const provider = await wallet.getEthereumProvider();
                 if (!provider) {
                     console.error('Ethereum provider is undefined');
@@ -157,7 +203,7 @@ const Profile = () => {
 
                 const walletClient = createWalletClient({
                     account: wallet.address as Hex,
-                    chain: sepolia,
+                    chain: chain,
                     transport: custom(provider),
                 });
 
@@ -166,62 +212,73 @@ const Profile = () => {
                     account: address,
                     to: destinationAddress as `0x${string}`,
                     value: parseEther(amount),
+                    chain: chain,
                 });
 
-                toast.success("Transaction successful");
-                setOpen(false)
-                return hash
-
+                toast.success(`Transaction successful on ${SUPPORTED_NETWORKS[selectedNetwork].name}`);
+                setOpen(false);
+                return hash;
             }
+        } catch (error: any) {
+            console.error("Error sending transaction:", error);
 
-        } catch (error) {
-            console.log("Error sending transaction:", error);
-            toast.error("Error sending transaction");
+            // Provide more detailed error messaging
+            const errorMessage = error.message || "Error sending transaction";
+            toast.error(errorMessage);
         }
     };
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-black mb-2 font-montserrat">WALLET DASHBOARD</h1>
-                <p className="text-gray-600 font-montserrat">Manage and monitor your connected wallets</p>
+            <div className="mb-4 flex items-center space-x-2">
+                <Globe className="w-5 h-5 text-muted-foreground" />
+                <Select
+                    value={selectedNetwork}
+                    onValueChange={(value: NetworkKey) => setSelectedNetwork(value)}
+                >
+                    <SelectTrigger className="w-[250px]">
+                        <SelectValue placeholder="Select Network" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {Object.entries(SUPPORTED_NETWORKS).map(([key, network]) => (
+                            <SelectItem key={key} value={key}>
+                                {network.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
-            
-            {/* Server Wallet Card */}
-            <div className="mb-8 bg-black rounded-3xl shadow-lg p-6 text-white">
-                <h2 className="text-2xl font-bold mb-4 font-montserrat">SERVER WALLET</h2>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-foreground mb-2">Your Wallet Dashboard</h1>
+                <p className="text-muted-foreground">Manage and monitor your connected wallets</p>
+            </div>
+            <div className="mb-8 bg-gradient-to-r from-primary to-primary/70 rounded-xl shadow-lg p-6 text-primary-foreground">
+                <h2 className="text-2xl font-bold mb-2">Server Wallet</h2>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                         <Wallet2 className="w-8 h-8" />
                         <div>
-                            <p className="font-semibold font-montserrat">{truncateAddress(serverWallet?.address || "N/A")}</p>
-                            <p className="text-sm font-montserrat">Balance: {serverWallet?.balance.toFixed(4) || "0.0000"} ETH</p>
+                            <p className="font-semibold">{truncateAddress(serverWallet?.address || "N/A")}</p>
+                            <p className="text-sm">Balance: {serverWallet?.balance.toFixed(4) || "0.0000"} ETH</p>
                         </div>
                     </div>
                     {serverWallet && (
-                        <button 
-                            onClick={() => handleCopyAddress(serverWallet.address)}
-                            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                        >
-                            <Copy className="w-5 h-5 text-white" />
+                        <button onClick={() => handleCopyAddress(serverWallet.address)}>
+                            <Copy className="w-5 h-5 text-primary-foreground hover:text-primary-foreground/90 cursor-pointer" />
                         </button>
                     )}
                 </div>
-                
                 {serverWallet && (
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button
                                 onClick={() => setSelectedWallet(serverWallet)}
-                                className="mt-4 bg-white text-black hover:bg-white/90 font-montserrat rounded-full"
+                                className="bg-primary-foreground hover:bg-primary-foreground/90 text-primary mt-4"
                             >
-                                <Send className="w-4 h-4 mr-2" />
                                 Send Transaction
                             </Button>
                         </DialogTrigger>
-                        
-                        {/* Dialog content remains the same */}
-                        <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
+                        <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
                                 <DialogTitle className="text-2xl font-bold">Send Transaction</DialogTitle>
                                 <DialogDescription className="text-muted-foreground">
@@ -288,7 +345,7 @@ const Profile = () => {
                                 </Button>
                                 <Button
                                     onClick={sendTransaction}
-                                    className="bg-primary hover:bg-primary/90 text-white"
+                                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                                 >
                                     <Send className="w-4 h-4 mr-2" />
                                     Send Transaction
@@ -298,39 +355,33 @@ const Profile = () => {
                     </Dialog>
                 )}
             </div>
-            
-            {/* Connected Wallets Grid */}
-            <h2 className="text-2xl font-bold mb-4 text-black font-montserrat">CONNECTED WALLETS</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {walletBalances.length > 0 ? (
                     walletBalances.map((wallet, index) => (
                         <div key={index}
-                            className="bg-white rounded-3xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl border-2 border-black">
+                            className="bg-card rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl border border-border">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center space-x-3">
                                     {getWalletIcon(wallet.clientType || '')}
                                     <div>
-                                        <h3 className="font-semibold text-lg text-black capitalize font-montserrat">
+                                        <h3 className="font-semibold text-lg text-foreground capitalize">
                                             {getWalletName(wallet.clientType || '')} Wallet
                                         </h3>
-                                        <p className="text-sm text-gray-500 font-mono">
+                                        <p className="text-sm text-muted-foreground font-mono">
                                             {truncateAddress(wallet.address)}
                                         </p>
-                                        <button 
-                                            onClick={() => handleCopyAddress(wallet.address)}
-                                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                                        >
-                                            <Copy className="w-4 h-4 text-gray-500" />
+                                        <button onClick={() => handleCopyAddress(wallet.address)}>
+                                            <Copy className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-pointer" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center space-x-2 bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <Coins className="w-5 h-5 text-black" />
+                            <div className="flex items-center space-x-2 bg-muted rounded-lg p-4">
+                                <Coins className="w-5 h-5 text-primary" />
                                 <div>
-                                    <p className="text-sm text-gray-600 font-montserrat">Balance</p>
-                                    <p className="font-semibold text-lg font-montserrat">
+                                    <p className="text-sm text-muted-foreground">Balance</p>
+                                    <p className="font-semibold text-lg text-foreground">
                                         {wallet.balance.toFixed(4)} ETH
                                     </p>
                                 </div>
@@ -340,15 +391,12 @@ const Profile = () => {
                                 <DialogTrigger asChild>
                                     <Button
                                         onClick={() => setSelectedWallet(wallet)}
-                                        className="mt-4 w-full bg-black hover:bg-black/90 text-white font-montserrat rounded-full"
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground mt-4"
                                     >
-                                        <Send className="w-4 h-4 mr-2" />
                                         Send Transaction
                                     </Button>
                                 </DialogTrigger>
-                                
-                                {/* Dialog content remains the same */}
-                                <DialogContent className="sm:max-w-[425px] rounded-3xl border-black">
+                                <DialogContent className="sm:max-w-[425px]">
                                     <DialogHeader>
                                         <DialogTitle className="text-2xl font-bold">Send Transaction</DialogTitle>
                                         <DialogDescription className="text-muted-foreground">
@@ -415,7 +463,7 @@ const Profile = () => {
                                         </Button>
                                         <Button
                                             onClick={sendTransaction}
-                                            className="bg-primary hover:bg-primary/90 text-white"
+                                            className="bg-primary hover:bg-primary/90 text-primary-foreground"
                                         >
                                             <Send className="w-4 h-4 mr-2" />
                                             Send Transaction
@@ -426,10 +474,10 @@ const Profile = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-full flex flex-col items-center justify-center p-8 bg-white rounded-3xl border-2 border-dashed border-black">
-                        <Wallet2 className="w-12 h-12 text-black mb-3" />
-                        <h3 className="text-lg font-medium text-black mb-1 font-montserrat">NO WALLETS CONNECTED</h3>
-                        <p className="text-gray-500 font-montserrat">Connect a wallet to get started</p>
+                    <div className="col-span-full flex flex-col items-center justify-center p-8 bg-muted rounded-xl border-2 border-dashed border-border">
+                        <Wallet2 className="w-12 h-12 text-muted-foreground mb-3" />
+                        <h3 className="text-lg font-medium text-foreground mb-1">No Wallets Connected</h3>
+                        <p className="text-muted-foreground">Connect a wallet to get started</p>
                     </div>
                 )}
             </div>

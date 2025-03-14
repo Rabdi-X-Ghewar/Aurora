@@ -1,4 +1,4 @@
-const API_URL = 'https://plutus-server.onrender.com'
+const API_URL = 'http://localhost:3001';
 
 export const addUserToDatabase = async (user: any) => {
     try {
@@ -79,5 +79,21 @@ export const saveWallet = async (email: string, address: string, nickname: strin
         return result;
     } catch (error) {
         console.log("Error saving wallet:", error);
+    } 
+}
+
+export const deleteWallet = async (email: string, address: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/saved-wallets`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, address }),
+        });
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.log("Error deleting wallet:", error);
     }
 }

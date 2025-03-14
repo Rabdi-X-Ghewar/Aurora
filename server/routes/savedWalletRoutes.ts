@@ -44,8 +44,8 @@ router.post('/saved-wallets', async (req:Request, res:Response): Promise<any> =>
 });
 
 // API to delete a saved wallet by ID
-router.delete('/saved-wallets/:email/:walletId',async (req:Request, res:Response): Promise<any>=> {
-    const { email, address } = req.params;
+router.delete('/saved-wallets',async (req:Request, res:Response): Promise<any>=> {
+    const { email, address } = req.body;
 
     try {
         const result = await SavedWallet.findOneAndDelete({ email, address });

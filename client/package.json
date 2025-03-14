@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aptos-labs/wallet-adapter-react": "^4.1.2",
     "@lidofinance/lido-ethereum-sdk": "^4.2.0",
     "@opencampus/ocid-connect-js": "^1.2.6",
     "@privy-io/react-auth": "^2.2.1",

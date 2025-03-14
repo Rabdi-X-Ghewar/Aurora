@@ -5,6 +5,7 @@ import { Button } from "./ui/button"
 import { useCreateWallet } from '@privy-io/react-auth';
 import { createWalletClient, custom, Hex, parseEther } from 'viem';
 import { sepolia } from 'viem/chains';
+import WalletConnectButton from "./PetraConnect";
 
 export function MainNav() {
     const { linkWallet } = usePrivy();
@@ -64,7 +65,7 @@ export function MainNav() {
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-fit p-4 border-2 border-black rounded-3xl">
-                    <div className="mb-4">
+                    <div className="mb-1">
                         <h3 className="font-bold text-black font-montserrat mb-2">CONNECTED WALLETS</h3>
                         {wallets.length > 0 ? (
                             <div className="space-y-2">
@@ -87,6 +88,10 @@ export function MainNav() {
                         )}
                     </div>
 
+                    <DropdownMenuItem>
+                            <WalletConnectButton />
+                    </DropdownMenuItem>
+
                     <div className="grid grid-cols-1 gap-2">
                         <DropdownMenuItem onClick={linkWallet} className="p-0 focus:bg-transparent">
                             <Button variant="outline" className="w-full rounded-full border-2 border-black hover:bg-black hover:text-white font-montserrat">
@@ -94,6 +99,7 @@ export function MainNav() {
                                 Link Wallet
                             </Button>
                         </DropdownMenuItem>
+                        
                         
                         <DropdownMenuItem onClick={createWallet} className="p-0 focus:bg-transparent">
                             <Button variant="outline" className="w-full rounded-full border-2 border-black hover:bg-black hover:text-white font-montserrat">
