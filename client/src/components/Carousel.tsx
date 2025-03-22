@@ -25,8 +25,8 @@ const features = [
     icon: "🌈",
   },
   {
-    title: "SEO Optimized",
-    description: "Built to help your site rank higher in search results.",
+    title: "Tracker",
+    description: "Get best insights on projects and Tokens through our AI Tracking mechanism, copy profitable wallets and track investments across multiple chains.",
     icon: "🔍",
   },
 ];
