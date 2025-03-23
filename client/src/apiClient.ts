@@ -97,3 +97,38 @@ export const deleteWallet = async (email: string, address: string) => {
         console.log("Error deleting wallet:", error);
     }
 }
+
+export const getMarkets = async () => {
+    try {
+        const response = await fetch(`${API_URL}/api/markets`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.log("Error fetching markets:", error);
+    }
+}
+
+export const getAccountPosition = async (address: string, market: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/account/${address}/position?market=${market}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error in getAccountPosition:', error);
+        throw error;
+    }
+};

@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, Ticket, Wine, Users, Fish, Waves, Trophy, UserCircle, Wallet, LogOut, Link2 } from "lucide-react"
+import { Home, LayoutGrid, Ticket, Wine, Users, Fish, UserCircle, Wallet, LogOut, Link2 } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -20,7 +20,7 @@ const sidebarItems = [
     { icon: Wine, label: "Transactions", href: "/transactions" },
     { icon: Users, label: "Chat Bot", href: "/chat-bot" },
     { icon: Fish, label: "Saved Wallets", href: "/saved-wallets" },
-    { icon: Waves, label: "Bots", href: "#" },
+    { icon: Home, label: "Trading View", href: "/trading-view" },
 ]
 
 export function AppSidebar() {

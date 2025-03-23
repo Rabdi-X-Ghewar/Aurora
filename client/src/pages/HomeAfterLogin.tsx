@@ -8,6 +8,7 @@ import WalletTracker from "./WalletTracker"
 import SavedWalletsPage from "./SavedWalletsPage"
 import TransactionPage from "./Transactions"
 import AgentDetails from "./AgentDetails"
+import TradingViewPage from "./TradingViewPage"
 
 const HomeAfterLogin = () => {
     return (
@@ -27,7 +28,7 @@ const HomeAfterLogin = () => {
                             <MainNav />
                         </div>
                     </header>
-                    <main className="flex-1">
+                    <main className="flex-1 h-full">
                         <Routes>
                             <Route path="/" element={<Navigate to="/profile" replace />} />
                             <Route path="/profile" element={<Profile />} />
@@ -35,6 +36,7 @@ const HomeAfterLogin = () => {
                             <Route path="/saved-wallets" element={<SavedWalletsPage />} />
                             <Route path="/transactions" element={<TransactionPage />} />
                             <Route path="/chat-bot" element={<AgentDetails />} />
+                            <Route path="/trading-view" element={<TradingViewPage />} />
                         </Routes>
                     </main>
                 </div>
