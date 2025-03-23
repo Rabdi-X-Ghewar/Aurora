@@ -4,8 +4,10 @@ import {
   Provider,
   AgentDetails,
   AgentListItem,
-  EthereumMetrics,
+  EthereumMetrics,TicketBooking, TripBooking
 } from "../../types/AgentInterfaces";
+
+
 
 // Card Components
 
@@ -271,6 +273,113 @@ export const ValidatorMetricsCard: React.FC<{ data: any }> = ({ data }) => (
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  </div>
+);
+
+export const TravelTicketCard: React.FC<{ data: TicketBooking }> = ({ data }) => (
+  <div className="border-2 border-black rounded-xl bg-white p-6">
+    <div className="flex items-center mb-6">
+      <div className="h-6 w-1 bg-black mr-3"></div>
+      <h2 className="text-2xl font-bold text-black font-montserrat">Travel Ticket</h2>
+    </div>
+    <div className="grid gap-6">
+      <div className="flex items-center justify-between border-2 border-black rounded-xl p-4">
+        <div>
+          <p className="text-black/70 font-montserrat mb-1">Passenger</p>
+          <p className="text-xl font-bold text-black font-montserrat">{data.passenger.name}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-black/70 font-montserrat mb-1">Ticket #</p>
+          <p className="text-xl font-bold text-black font-montserrat">{data.ticket_number}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">From</p>
+          <p className="text-lg font-bold text-black font-montserrat">{data.journey.from}</p>
+        </div>
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">To</p>
+          <p className="text-lg font-bold text-black font-montserrat">{data.journey.to}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Date</p>
+          <p className="text-md font-bold text-black font-montserrat">{data.journey.date}</p>
+        </div>
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Departure</p>
+          <p className="text-md font-bold text-black font-montserrat">{data.journey.departure_time}</p>
+        </div>
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Seat</p>
+          <p className="text-md font-bold text-black font-montserrat">{data.seat_number}</p>
+        </div>
+      </div>
+
+      <div className="border-2 border-black rounded-xl p-4">
+        <p className="text-black/70 font-montserrat mb-1">Price</p>
+        <p className="text-2xl font-bold text-black font-montserrat">{data.price}</p>
+      </div>
+    </div>
+  </div>
+);
+
+export const HotelBookingCard: React.FC<{ data: TripBooking }> = ({ data }) => (
+  <div className="border-2 border-black rounded-xl bg-white p-6">
+    <div className="flex items-center mb-6">
+      <div className="h-6 w-1 bg-black mr-3"></div>
+      <div>
+        <h2 className="text-2xl font-bold text-black font-montserrat">{data.hotel_details.name}</h2>
+        <p className="text-black/70 font-montserrat">{data.hotel_details.category}</p>
+      </div>
+    </div>
+
+    <div className="grid gap-6">
+      <div className="flex items-center justify-between border-2 border-black rounded-xl p-4">
+        <div>
+          <p className="text-black/70 font-montserrat mb-1">Guest</p>
+          <p className="text-xl font-bold text-black font-montserrat">{data.guest_details.name}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-black/70 font-montserrat mb-1">Booking #</p>
+          <p className="text-xl font-bold text-black font-montserrat">{data.booking_id}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Check-in</p>
+          <p className="text-lg font-bold text-black font-montserrat">{data.stay_details.check_in}</p>
+          <p className="text-sm text-black/70 font-montserrat">{data.additional_info.check_in_time}</p>
+        </div>
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Check-out</p>
+          <p className="text-lg font-bold text-black font-montserrat">{data.stay_details.check_out}</p>
+          <p className="text-sm text-black/70 font-montserrat">{data.additional_info.check_out_time}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Room Type</p>
+          <p className="text-lg font-bold text-black font-montserrat">{data.room_details.type}</p>
+          <p className="text-sm text-black/70 font-montserrat">Room {data.room_details.number}</p>
+        </div>
+        <div className="border-2 border-black rounded-xl p-4">
+          <p className="text-black/70 font-montserrat mb-1">Total Price</p>
+          <p className="text-lg font-bold text-black font-montserrat">
+            ${data.room_details.total_price.toFixed(2)}
+          </p>
+          <p className="text-sm text-black/70 font-montserrat">
+            {data.stay_details.nights} nights
+          </p>
+        </div>
       </div>
     </div>
   </div>

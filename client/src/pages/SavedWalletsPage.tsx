@@ -79,7 +79,23 @@ const SavedWalletsPage = () => {
     };
 
     useEffect(() => {
-        fetchSavedWallets();
+        fetchSavedWallets()
+            // Set email in server
+            fetch('http://localhost:3000/api/set-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: user?.email?.address }),
+            })
+            .then(response => response.json())
+            .then(() => {
+                fetchSavedWallets();
+            })
+            .catch(error => {
+                console.error('Error setting email in server:', error);
+            });
+        
     }, [user?.email?.address]);
 
     useEffect(() => {

@@ -1,46 +1,46 @@
 // provider.js
-let web3Provider = null;
-let providerResolve = null;
-let userAddress = null;
-let userAddressResolve = null;
+let account = null;
+let accountResolve = null;
+let wallet = null;
+let walletResolve = null;
 
 // Create promises that resolve when the provider and address are set
-const providerPromise = new Promise((resolve) => {
-  providerResolve = resolve;
+const accountPromise = new Promise((resolve) => {
+  accountResolve = resolve;
 });
 
-const userAddressPromise = new Promise((resolve) => {
-  userAddressResolve = resolve;
+const walletPromise = new Promise((resolve) => {
+  walletResolve = resolve;
 });
 
-export const setProvider = (provider) => {
-  if (!provider) {
+export const setAccount = (account) => {
+  if (!account) {
     throw new Error("Invalid provider.");
   }
-  web3Provider = provider;
-  providerResolve(provider); // Resolve the promise when the provider is set
+  account = account;
+  accountResolve(account); // Resolve the promise when the provider is set
 };
 
-export const getProvider = async () => {
-  if (web3Provider) {
-    return web3Provider; // Return the provider if already set
+export const getAccount = async () => {
+  if (account) {
+    return account; // Return the provider if already set
   }
   // Wait for the provider to be set
-  return providerPromise;
+  return accountPromise;
 };
 
-export const setUserAddress = (address) => {
-  if (!address) {
+export const setWallet = (wallet) => {
+  if (!wallet) {
     throw new Error("Invalid address.");
   }
-  userAddress = address;
-  userAddressResolve(address); // Resolve the promise when the address is set
+  wallet = wallet;
+  walletResolveResolve(wallet); // Resolve the promise when the address is set
 };
 
-export const getUserAddress = async () => {
-  if (userAddress) {
-    return userAddress; // Return the address if already set
+export const getWallet = async () => {
+  if (wallet) {
+    return wallet; // Return the address if already set
   }
   // Wait for the address to be set
-  return userAddressPromise;
+  return walletPromise;
 };
