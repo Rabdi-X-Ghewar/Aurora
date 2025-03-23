@@ -22,9 +22,9 @@ const HomeAfterLogin = () => {
                             <SidebarTrigger />
                             <div className="flex items-center gap-2 mr-4">
                                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                                    <span className="text-lg font-bold text-primary-foreground">P</span>
+                                    <span className="text-lg font-bold text-primary-foreground">A</span>
                                 </div>
-                                <span className="font-semibold text-xl">Pluto</span>
+                                <span className="font-semibold text-xl">Aurora</span>
                             </div>
                             <MainNav />
                         </div>
