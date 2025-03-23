@@ -85,7 +85,7 @@ const ExploreSection = () => {
             <div className="bg-white rounded-2xl  overflow-hidden">
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/creative-SW6QDQbcVuwPgb6a2CYtYmRbsJa4k1.png"
-                alt="Plutus Dashboard"
+                alt="Aurora Dashboard"
                 className="w-full filter grayscale contrast-125 brightness-110 mix-blend-multiply"
               />
             </div>
@@ -148,7 +148,7 @@ const ExploreSection = () => {
           </h2>
           <p className="text-xl font-montserrat max-w-2xl mx-auto mb-12">
             Join thousands of users already transforming their financial future
-            with Plutus.
+            with Aurora.
           </p>
           <button
             onClick={Login}
