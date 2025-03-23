@@ -2,10 +2,12 @@
 import {
   Aptos,
   AptosConfig,
-  Ed25519PrivateKey,
+  Account,
   Network,
+  Ed25519PrivateKey,
   PrivateKey,
   PrivateKeyVariants,
+  
 } from "@aptos-labs/ts-sdk";
 import { AgentKit, twitterActionProvider } from "@coinbase/agentkit";
 import { getLangChainTools } from "@coinbase/agentkit-langchain";
@@ -14,11 +16,14 @@ import { AgentRuntime, LocalSigner, createAptosTools } from "move-agent-kit";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import stakingRewardsTool from "../tools/stakingRewardsTool.js";
-import lidoStakingTool from "../tools/lidoStakingTool.js";
+import { searchToolForAgent } from "../tools/search.js";
+import ticketBookingTool from "../tools/ticketBooking.js";
+import tripPlannerTool from "../tools/tripPlanner.js";
+import walletResolutionTool from "../tools/userTransaction.js";
 
 async function initializeAgent() {
   const llm = new ChatOpenAI({
-    model: "openai/gpt-3.5-turbo",
+    model: "openai/gpt-4o-mini",
     apiKey: process.env.OPENROUTER_API_KEY, // you can input your API key in plaintext, but this is not recommended
     configuration: {
       baseURL: "https://openrouter.ai/api/v1",
@@ -29,16 +34,16 @@ async function initializeAgent() {
   });
   const aptos = new Aptos(aptosConfig);
 
-  const account = await aptos.deriveAccountFromPrivateKey({
-    privateKey: new Ed25519PrivateKey(
-      PrivateKey.formatPrivateKey(
-        process.env.APTOS_PRIVATE_KEY,
-        PrivateKeyVariants.Ed25519
-      )
-    ),
-  });
+   const account = await aptos.deriveAccountFromPrivateKey({
+   privateKey: new Ed25519PrivateKey(
+     PrivateKey.formatPrivateKey(
+       process.env.APTOS_PRIVATE_KEY,
+       PrivateKeyVariants.Ed25519
+     )
+   ),
+ });
 
-  const signer = new LocalSigner(account, Network.TESTNET);
+  const signer = new LocalSigner(account,Network.TESTNET);
 
   // Initialize Aptos Agent Kit
 
@@ -61,8 +66,11 @@ async function initializeAgent() {
   const tools = [
     ...defaultTools,
     stakingRewardsTool,
-    lidoStakingTool,
     ...tweettool,
+    searchToolForAgent,
+    tripPlannerTool,
+    ticketBookingTool,
+    walletResolutionTool,
   ];
 
   // Set up memory and agent config
@@ -84,6 +92,7 @@ async function initializeAgent() {
         can't do with your currently available tools, you must say so, and encourage them to implement it
         themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
         concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+        If user query for transaction has a name for recepient instead of the address then use walletResolution tool to get address then perform transaction.
     `,
   });
 
