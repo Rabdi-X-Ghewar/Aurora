@@ -19,8 +19,9 @@ import {
   HotelBookingCard
   
 } from "../components/ui/AgentCards";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Message } from "../types/AgentInterfaces";
-import { StakingCard } from "../components/ui/StakingCard";
+// import { StakingCard } from "../components/ui/StakingCard";
 import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
 import { createPublicClient, http } from "viem";
 import { holesky } from "viem/chains";
@@ -33,7 +34,21 @@ const PLUTUS_ASCII = `
 ██║     ███████╗╚██████╔╝   ██║   ╚██████╔╝███████║
 ╚═╝     ╚══════╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝
 `;
+type PoolOption = {
+  name: string;
+  address: string;
+};
 
+// Add this constant after PLUTUS_ASCII
+const POOL_OPTIONS: PoolOption[] = [
+  { name: "Amnis Aptos Coin", address: "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::amapt_token::AmnisApt*" },
+  { name: "Wrapped Ether", address: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::WETH" },
+  { name: "Tether USDt", address: "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b" },
+  { name: "USDC", address: "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b" },
+  { name: "lzUSD", address: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC" },
+  { name: "lzUSDT", address: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT" },
+  // Add more pools as needed
+];
 const AgentDetails: React.FC = () => {
   const { authenticated, user } = usePrivy();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -45,6 +60,8 @@ const AgentDetails: React.FC = () => {
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [waveform, setWaveform] = useState<number[]>(Array(40).fill(0));
+  const [showTrading, setShowTrading] = useState(false);
+  const [selectedPool, setSelectedPool] = useState<string>("");
 
   const ws = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -350,7 +367,14 @@ const AgentDetails: React.FC = () => {
       }
     };
   }, [voiceMode, isListening, isSpeaking]);
-
+  
+  const handlePoolSubmit = () => {
+    const pool = POOL_OPTIONS.find((p) => p.name === selectedPool);
+    if (pool && ws.current) {
+      const query = `get pool details for ${pool.address}`;
+      handleSendMessage(query);
+    }
+  };
   // Toggle voice mode
   const toggleVoiceMode = () => {
     const newVoiceMode = !voiceMode;
@@ -745,18 +769,18 @@ const AgentDetails: React.FC = () => {
         )}
       </div>
 
-      {/* Right Side - Explore and Cards */}
+      {/* Right Side - Explore and Trading Sections */}
       <div className="flex-1 flex flex-col p-6 bg-white overflow-hidden">
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center">
-              <div className="text-2xl font-bold text-black font-montserrat tracking-tight">
-                EXPLORE
-              </div>
-              <div className="ml-2 h-1 w-16 bg-black"></div>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center">
+            <div className="text-2xl font-bold text-black font-montserrat tracking-tight">
+              {showTrading ? "TRADING" : "EXPLORE"}
             </div>
+            <div className="ml-2 h-1 w-16 bg-black"></div>
+          </div>
 
-            {canVote && (
+          <div className="flex items-center gap-4">
+            {canVote && !showTrading && (
               <Button
                 onClick={() => (window.location.href = "/voting")}
                 className="bg-black hover:bg-black/80 text-white font-bold rounded-full px-6 font-montserrat"
@@ -767,64 +791,112 @@ const AgentDetails: React.FC = () => {
                 </span>
               </Button>
             )}
-          </div>
 
-          {!currentCard && (
-            <div className="border-2 border-black rounded-xl bg-white p-8 text-center">
-              <div className="text-black/70 font-montserrat mb-2">
-                No data to display
-              </div>
-              <div className="text-black/40 text-sm font-montserrat">
-                Ask the AI assistant about staking assets, agents, or Ethereum
-                metrics
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-6">
-            {renderCard()}
-
-            {/* Staking Card moved inside explore section */}
-            {authenticated && embeddedWallet && (
-              <div className="border-2 border-black rounded-xl bg-white shadow-md p-6 mt-6 transition-all hover:bg-gray-50">
-                <div className="text-xl font-bold text-black font-montserrat mb-4 flex items-center">
-                  <div className="h-6 w-1 bg-black mr-3"></div>
-                  STAKING
+            <div className="flex items-center gap-3">
+              <Label className="text-sm font-montserrat">ChatMode</Label>
+              <div className="relative inline-flex items-center">
+                <div
+                  onClick={() => setShowTrading(!showTrading)}
+                  className={`w-16 h-8 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ease-in-out ${
+                    showTrading ? "bg-black" : "bg-gray-200"
+                  }`}
+                >
+                  <div
+                    className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ease-in-out flex items-center justify-center ${
+                      showTrading ? "translate-x-8" : "translate-x-0"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 ${
+                        showTrading ? "bg-black" : "bg-gray-400"
+                      } rounded-sm transform transition-all duration-300 ${
+                        showTrading ? "rotate-45" : "rotate-0"
+                      }`}
+                    />
+                  </div>
                 </div>
-                <StakingCard
-                  web3Provider={LidoSDKCore.createWeb3Provider(
-                    chainId,
-                    window.ethereum
-                  )}
-                  account={user?.wallet?.address || ""}
-                />
               </div>
-            )}
+              <Label
+                htmlFor="section-toggle"
+                className="text-sm font-montserrat"
+              >
+                TradingModeOn
+              </Label>
+            </div>
           </div>
         </div>
-      </div>
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {showTrading ? (
+            // Trading Section
+            <div className="border-2 border-black rounded-xl bg-white p-8">
+              <div className="text-xl font-bold text-black font-montserrat mb-6 flex items-center">
+                <div className="h-6 w-1 bg-black mr-3"></div>
+                JOULE FINANCE POOL
+              </div>
 
-      {/* Styles */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.05);
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(0, 0, 0, 0.3);
-        }
-      `,
-        }}
-      />
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  {POOL_OPTIONS.map((pool) => (
+                    <div
+                      key={pool.name}
+                      onClick={() => setSelectedPool(pool.name)}
+                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                        selectedPool === pool.name
+                          ? "border-black bg-black/5 shadow-lg"
+                          : "border-gray-200 hover:border-black/50 hover:shadow-md"
+                      }`}
+                    >
+                      <div className="font-medium text-lg mb-2">
+                        {pool.name}
+                      </div>
+                      <div className="text-sm text-gray-600 truncate">
+                        {pool.address}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handlePoolSubmit}
+                    className="bg-black text-white hover:bg-black/90 px-8 py-3 rounded-xl font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!selectedPool}
+                  >
+                    Stake In {selectedPool || "Selected Pool"}
+                  </Button>
+                </div>
+
+                {currentCard && showTrading && (
+                  <div className="mt-6">{renderCard()}</div>
+                )}
+              </div>
+            </div>
+          ) : (
+            // Explore Section (existing code)
+            <div className="space-y-6">
+              {!currentCard ? (
+                <div className="border-2 border-black rounded-xl bg-white p-8 text-center">
+                  <div className="text-black/70 font-montserrat mb-2">
+                    No data to display
+                  </div>
+                  <div className="text-black/40 text-sm font-montserrat">
+                    Ask the AI assistant about staking assets, agents, or
+                    Ethereum metrics
+                  </div>
+                </div>
+              ) : (
+                renderCard()
+              )}
+
+              {/* {authenticated && embeddedWallet && (
+                <div className="border-2 border-black rounded-xl bg-white shadow-md p-6 mt-6 transition-all hover:bg-gray-50">
+                  {/* ... existing StakingCard code ... */}
+              {/* </div> */}
+              {/* )} */}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
