@@ -18,7 +18,6 @@ function App() {
   const { authenticated, user } = usePrivy();
   
   useEffect(() => {
-    window.Buffer = Buffer;
     if (authenticated) {
       addUserToDatabase(user);
     }
@@ -36,7 +35,6 @@ function App() {
 
   return (
     <>
-      <Button>Get Markets</Button>
       {authenticated ? (
         <HomeAfterLogin />
       ) : (

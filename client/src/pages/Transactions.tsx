@@ -118,7 +118,7 @@ const networks: Network[] = [
     }
 ];
 
-const TransactionPage = () => {
+const Transactions = () => {
     const [selectedWallet, setSelectedWallet] = useState<string>("");
     const [serverWallet, setServerWallet] = useState<string>("");
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -542,4 +542,4 @@ const TransactionPage = () => {
     );
 };
 
-export default TransactionPage;
+export default Transactions

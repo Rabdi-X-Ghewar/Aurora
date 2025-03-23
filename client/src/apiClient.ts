@@ -9,7 +9,9 @@ export const addUserToDatabase = async (user: any) => {
             },
             body: JSON.stringify(user),
         });
-
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -25,6 +27,9 @@ export const fetchWallet = async (email: string) => {
                 'Content-Type': 'application/json',
             },
         });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -42,6 +47,9 @@ export const sendServerTransaction = async (email: string, to: string, valueInEt
             },
             body: JSON.stringify({ email, to, valueInEth }),
         });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -58,6 +66,9 @@ export const getSavedWallets = async (email: string) => {
                 'Content-Type': 'application/json',
             },
         });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -75,11 +86,14 @@ export const saveWallet = async (email: string, address: string, nickname: strin
             },
             body: JSON.stringify({ email, address, nickname }),
         });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
         console.log("Error saving wallet:", error);
-    } 
+    }
 }
 
 export const deleteWallet = async (email: string, address: string) => {
@@ -91,6 +105,9 @@ export const deleteWallet = async (email: string, address: string) => {
             },
             body: JSON.stringify({ email, address }),
         });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -106,6 +123,9 @@ export const getMarkets = async () => {
                 'Content-Type': 'application/json',
             },
         })
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
         const result = await response.json();
         return result;
     } catch (error) {
@@ -132,3 +152,53 @@ export const getAccountPosition = async (address: string, market: string) => {
         throw error;
     }
 };
+
+export const createTransactionPayload = async (
+    type: 'supply' | 'withdraw' | 'borrow' | 'repay',
+    coinAddress: string,
+    market: string,
+    amount: number
+) => {
+    try {
+        const response = await fetch(`${API_URL}/api/transaction/payload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ type, coinAddress, market, amount }),
+        })
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error in createTransactionPayload:', error);
+
+    }
+}
+
+export const getClaimedRewards = async (
+    account: string,
+    coinName: string,
+    market: string,
+    mode: 'supply' | 'borrow'
+) => {
+    try {
+        const response = await fetch(`${API_URL}/api/rewards/${account}?coinName=${coinName}&market=${market}&mode=${mode}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch account position: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error in getClaimedRewards:', error);
+    }
+}
