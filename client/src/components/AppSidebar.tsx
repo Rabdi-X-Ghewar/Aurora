@@ -1,4 +1,15 @@
-import { Home, LayoutGrid, Ticket, Wine, Users, Fish, UserCircle, Wallet, LogOut, Link2 } from "lucide-react"
+import {
+    LayoutDashboard,
+    Receipt,
+    MessageSquareMore,
+    BookmarkCheck,
+    LineChart,
+    ArrowLeftRight,
+    UserCircle,
+    Wallet,
+    LogOut,
+    Link2
+} from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -14,27 +25,28 @@ import { Button } from "./ui/button";
 import { Link } from "react-router";
 import { useSidebar } from "./ui/sidebar";
 
-const sidebarItems = [
-    { icon: LayoutGrid, label: "Dashboard", href: "/profile" },
-    { icon: Ticket, label: "Wallet Watcher", href: "/watcher" },
-    { icon: Wine, label: "Transactions", href: "/transactions" },
-    { icon: Users, label: "Chat Bot", href: "/chat-bot" },
-    { icon: Fish, label: "Saved Wallets", href: "/saved-wallets" },
-    { icon: Home, label: "Trading View", href: "/trading-view" },
-]
 
+const sidebarItems = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/profile" },
+    { icon: Wallet, label: "Wallet Watcher", href: "/watcher" },
+    { icon: Receipt, label: "Transactions", href: "/transactions" },
+    { icon: MessageSquareMore, label: "Chat Bot", href: "/chat-bot" },
+    { icon: BookmarkCheck, label: "Saved Wallets", href: "/saved-wallets" },
+    { icon: LineChart, label: "Trading View", href: "/trading-view" },
+    { icon: ArrowLeftRight, label: "Trading", href: "/trading" },
+];
 export function AppSidebar() {
     const { state } = useSidebar();
     const { logout, user, linkWallet } = usePrivy();
     const { wallets } = useWallets()
-    
+
     const truncateAddress = (address: string) => {
         return `${address.slice(0, 6)}...${address.slice(-4)}`;
     };
-    
+
     return (
-        <Sidebar 
-            collapsible="icon" 
+        <Sidebar
+            collapsible="icon"
             className="border-r border-black z-50 fixed h-screen bg-white"
         >
             <SidebarHeader className="border-b border-black px-2 py-4">
@@ -86,7 +98,7 @@ export function AppSidebar() {
                                     <h3 className="font-bold text-black font-montserrat mb-1">USER</h3>
                                     <p className="text-sm text-gray-700 font-montserrat">{user?.email?.address}</p>
                                 </div>
-                                
+
                                 <div className="mb-4 pb-3 border-b border-gray-200">
                                     <h3 className="font-bold text-black font-montserrat mb-2">CONNECTED WALLETS</h3>
                                     {wallets.length > 0 ? (
@@ -109,7 +121,7 @@ export function AppSidebar() {
                                         <p className="text-sm text-gray-600 font-montserrat">No wallets connected</p>
                                     )}
                                 </div>
-                                
+
                                 <div className="grid grid-cols-1 gap-2">
                                     <DropdownMenuItem onClick={linkWallet} className="p-0 focus:bg-transparent">
                                         <Button variant="outline" className="w-full rounded-full border-2 border-black hover:bg-black hover:text-white font-montserrat">
@@ -117,7 +129,7 @@ export function AppSidebar() {
                                             Link Wallet
                                         </Button>
                                     </DropdownMenuItem>
-                                    
+
                                     <DropdownMenuItem onClick={logout} className="p-0 focus:bg-transparent">
                                         <Button variant="outline" className="w-full rounded-full border-2 border-black bg-black text-white hover:bg-white hover:text-black font-montserrat">
                                             <LogOut className="h-4 w-4 mr-2" />

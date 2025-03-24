@@ -6,24 +6,33 @@ const router = express.Router();
 
 const aptos = new Aptos(
     new AptosConfig({
-        network: Network.TESTNET,
+        network: Network.MAINNET,
         fullnode: "https://api.testnet.staging.aptoslabs.com/v1",
     })
 );
 
-const ECHELON_CONTRACT_ADDRESS = "0x0daaf1cca3f702b3d94425e4f0a7bfb921142666846a916f5be91edf1f1911d4";
-// Initialize Echelon client
-const echelonClient = new EchelonClient(aptos, ECHELON_CONTRACT_ADDRESS);
+const echelonClient = new EchelonClient(aptos, "0x0daaf1cca3f702b3d94425e4f0a7bfb921142666846a916f5be91edf1f1911d4");
 
 
 router.get('/api/markets', async (req: Request, res: Response): Promise<any> => {
     try {
         const markets = await echelonClient.getAllMarkets();
+        console.log("Markets: ", markets);
         const marketData = await Promise.all(markets.map(async (market) => {
             const coinAddress = await echelonClient.getMarketCoin(market);
             const borrowApr = await echelonClient.getBorrowApr(market);
             const supplyApr = await echelonClient.getSupplyApr(market);
-            const price = await echelonClient.getCoinPrice(market);
+            console.log("Supply APR: ", supplyApr);
+
+            let price;
+            try { 
+                price = await echelonClient.getCoinPrice(market);
+                console.log("Price: ", price);
+            } catch (priceError) {
+                console.error(`Error fetching price for market ${market}:`);
+                price = 0; // or some default value
+            }
+            console.log("Price: ", price);
 
             return {
                 id: market,
@@ -50,19 +59,38 @@ router.get('/api/account/:address/position', async (req: Request, res: Response)
             return res.status(400).json({ error: 'Market parameter is required' });
         }
 
-        const [supplied, borrowable, withdrawable, liability] = await Promise.all([
+        // Use Promise.allSettled instead of Promise.all to handle partial failures
+        const results = await Promise.allSettled([
             echelonClient.getAccountSupply(address, market as string),
             echelonClient.getAccountBorrowable(address, market as string),
             echelonClient.getAccountWithdrawable(address, market as string),
             echelonClient.getAccountLiability(address, market as string)
         ]);
-
-        res.json({
-            supplied,
-            borrowable,
-            withdrawable,
-            liability
-        });
+        
+        // Process results
+        const [suppliedResult, borrowableResult, withdrawableResult, liabilityResult] = results;
+        
+        const response: any = {};
+        
+        if (suppliedResult.status === 'fulfilled') response.supplied = suppliedResult.value;
+        else response.supplied = 0;
+        
+        if (borrowableResult.status === 'fulfilled') response.borrowable = borrowableResult.value;
+        else response.borrowable = 0;
+        
+        if (withdrawableResult.status === 'fulfilled') response.withdrawable = withdrawableResult.value;
+        else response.withdrawable = 0;
+        
+        if (liabilityResult.status === 'fulfilled') response.liability = liabilityResult.value;
+        else response.liability = 0;
+        
+        // Add error information if needed
+        if (results.some(r => r.status === 'rejected')) {
+            response.hasErrors = true;
+            response.errorDetails = "Some position data could not be retrieved due to oracle issues";
+        }
+        
+        res.json(response);
     } catch (error) {
         console.error('Error fetching account position:', error);
         res.status(500).json({ error: 'Failed to fetch account position' });
@@ -72,6 +100,7 @@ router.get('/api/account/:address/position', async (req: Request, res: Response)
 router.post('/api/transaction/payload', async (req: Request, res: Response): Promise<any> => {
     try {
         const { type, coinAddress, market, amount } = req.body;
+        console.log(type, coinAddress, market, amount);
 
         if (!type || !coinAddress || !market || amount === undefined) {
             return res.status(400).json({
