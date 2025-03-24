@@ -649,7 +649,7 @@ const AgentDetails: React.FC = () => {
               className="text-black text-xs font-mono whitespace-pre select-none"
               style={{ textShadow: "0 0 1px rgba(0, 0, 0, 0.2)" }}
             >
-              {Aurora_ASCII}
+              {PLUTUS_ASCII}
             </pre>
             <Button
               variant="ghost"
