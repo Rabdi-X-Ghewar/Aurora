@@ -47,7 +47,7 @@ const ExploreSection = () => {
       name: "SMART TRADING",
       description:
         "Advanced trading tools with real-time analytics for optimal performance.",
-      href: "/smart-trading",
+      href: "#",
       cta: "Learn More",
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 opacity-20" />
@@ -59,7 +59,7 @@ const ExploreSection = () => {
       name: "SECURE STORAGE",
       description:
         "Military-grade encryption for your assets with multi-layer protection.",
-      href: "/secure-storage",
+      href: "#",
       cta: "Learn More",
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-teal-500 opacity-20" />
@@ -71,7 +71,7 @@ const ExploreSection = () => {
       name: "MULTI-CHAIN SUPPORT",
       description:
         "Support for all major blockchain networks in one unified platform.",
-      href: "/multi-chain-support",
+      href: "#",
       cta: "Learn More",
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-500 to-orange-500 opacity-20" />
@@ -82,8 +82,8 @@ const ExploreSection = () => {
       Icon: CalendarIcon,
       name: "SCHEDULED PAYMENTS",
       description:
-        "Automate utility payments and recurring transactions with ease.",
-      href: "/scheduled-payments",
+        "Automate utility payments and recurring transactions with ease on Aptos.",
+      href: "#",
       cta: "Learn More",
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-red-500 opacity-20" />
@@ -94,8 +94,8 @@ const ExploreSection = () => {
       Icon: BellIcon,
       name: "REAL-TIME NOTIFICATIONS",
       description:
-        "Stay informed with instant alerts for trades, payments, and updates.",
-      href: "/notifications",
+        "Stay informed with instant alerts for trades, payments, and updates on Echelon Market and Joule Finance",
+      href: "#",
       cta: "Learn More",
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-violet-500 opacity-20" />
