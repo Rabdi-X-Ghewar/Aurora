@@ -85,7 +85,6 @@ class TripPlannerTool extends DynamicStructuredTool {
           double: { price: price, available: Math.floor(Math.random() * 5) },
           suite: { price: price * 1.5, available: Math.floor(Math.random() * 3) }
         },
-        image_url: `/images/hotels/${location.toLowerCase()}-${type.category.toLowerCase()}.jpg`,
         coordinates: {
           latitude: (Math.random() * 180 - 90).toFixed(6),
           longitude: (Math.random() * 360 - 180).toFixed(6)
@@ -100,6 +99,10 @@ class TripPlannerTool extends DynamicStructuredTool {
     const mockHotel = this.#generateMockHotels(input.location)[0];
     const nights = Math.floor((new Date(input.check_out) - new Date(input.check_in)) / (1000 * 60 * 60 * 24));
     const pricePerNight = mockHotel.room_types[input.room_type].price;
+    
+    // Generate mock transaction details
+    const txHash = `0x${Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+    const walletAddress = `0x${Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
 
     return {
       booking_id: bookingId,
@@ -109,7 +112,6 @@ class TripPlannerTool extends DynamicStructuredTool {
         name: mockHotel.name,
         category: mockHotel.category,
         location: mockHotel.location,
-        image_url: mockHotel.image_url,
         coordinates: mockHotel.coordinates
       },
       room_details: {
@@ -117,6 +119,15 @@ class TripPlannerTool extends DynamicStructuredTool {
         number: roomNumber,
         price_per_night: pricePerNight,
         total_price: pricePerNight * nights
+      },
+      payment_details: {
+        status: "paid",
+        amount: pricePerNight * nights,
+        currency: "USD",
+        payment_method: "wallet",
+        wallet_address: walletAddress,
+        transaction_hash: txHash,
+        timestamp: new Date().toISOString()
       },
       guest_details: {
         name: input.guest_name,

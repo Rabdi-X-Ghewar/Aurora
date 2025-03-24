@@ -46,11 +46,6 @@ class TicketBookingTool extends DynamicStructuredTool {
   }
 
   #generateMockTicketDetails(input) {
-    const transportImages = {
-      bus: "/images/tickets/bus-ticket.png",
-      train: "/images/tickets/train-ticket.png",
-      flight: "/images/tickets/flight-ticket.png",
-    };
 
     const mockPrices = {
       bus: { base: 30, rate: 0.1 },
@@ -74,6 +69,10 @@ class TicketBookingTool extends DynamicStructuredTool {
       flight: "16:15 PM",
     };
 
+    // Generate mock transaction details
+    const txHash = `0x${Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+    const walletAddress = `0x${Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
+
     return {
       ticket_number: ticketNumber,
       passenger: {
@@ -89,9 +88,16 @@ class TicketBookingTool extends DynamicStructuredTool {
         arrival_time: arrivalTimes[input.mode],
         distance: `${distance} km`
       },
-      price: `$${price.toFixed(2)}`,
+      payment_details: {
+        status: "paid",
+        amount: price.toFixed(2),
+        currency: "USD",
+        payment_method: "wallet",
+        wallet_address: walletAddress,
+        transaction_hash: txHash,
+        timestamp: new Date().toISOString()
+      },
       status: "Confirmed",
-      image_url: transportImages[input.mode],
       booking_time: new Date().toISOString(),
       seat_number: `${String.fromCharCode(65 + Math.floor(Math.random() * 6))}${Math.floor(Math.random() * 30) + 1}`,
       additional_info: {

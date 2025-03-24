@@ -92,7 +92,9 @@ async function initializeAgent() {
         can't do with your currently available tools, you must say so, and encourage them to implement it
         themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
         concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
-        If user query for transaction has a name for recepient instead of the address then use walletResolution tool to get address then perform transaction.
+        Refrain from using aptos_get_wallet_adress and instead use walletResolutionTool to resolve the names and get their wallet addresses.
+        You should always use the walletResolutionTool to resolve the names and get their wallet addresses.
+        You should always use the walletResolutionTool to resolve the names and get their wallet addresses.
     `,
   });
 
