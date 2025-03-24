@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 
-
 export default function Marquee() {
   // Add your logo imports or paths
   const logos = [
