@@ -19,13 +19,12 @@ import {
   HotelBookingCard
   
 } from "../components/ui/AgentCards";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Message } from "../types/AgentInterfaces";
 // import { StakingCard } from "../components/ui/StakingCard";
 import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
 import { createPublicClient, http } from "viem";
 import { holesky } from "viem/chains";
-
+import { Window } from "../types/speech";
 const PLUTUS_ASCII = `
 ██████╗ ██╗     ██╗   ██╗████████╗██╗   ██╗███████╗
 ██╔══██╗██║     ██║   ██║╚══██╔══╝██║   ██║██╔════╝
@@ -86,6 +85,7 @@ const AgentDetails: React.FC = () => {
   }, [messages]);
 
   // Initialize Speech Recognition
+  // Initialize Speech Recognition
   useEffect(() => {
     if (
       (typeof window !== "undefined" && "SpeechRecognition" in window) ||
@@ -96,6 +96,7 @@ const AgentDetails: React.FC = () => {
       speechRecognitionRef.current = new SpeechRecognition();
       speechRecognitionRef.current.continuous = true;
       speechRecognitionRef.current.interimResults = true;
+      speechRecognitionRef.current.lang = "en-In";
 
       speechRecognitionRef.current.onresult = (event) => {
         const transcript = Array.from(event.results)
@@ -134,7 +135,6 @@ const AgentDetails: React.FC = () => {
       stopListening();
     };
   }, []);
-
   // Set provider
   useEffect(() => {
     const setProvider = async () => {
@@ -236,7 +236,7 @@ const AgentDetails: React.FC = () => {
                 type: "ticket_booking",
                 data: toolData.data,
               });
-            } 
+            }
           } catch (error) {
             console.error("Error parsing tool response:", error);
           }
@@ -367,7 +367,7 @@ const AgentDetails: React.FC = () => {
       }
     };
   }, [voiceMode, isListening, isSpeaking]);
-  
+
   const handlePoolSubmit = () => {
     const pool = POOL_OPTIONS.find((p) => p.name === selectedPool);
     if (pool && ws.current) {
@@ -902,13 +902,13 @@ const AgentDetails: React.FC = () => {
 };
 
 // // Add types for the Web Speech API if they don't exist in the global namespace
-// declare global {
-//   interface Window {
-//     SpeechRecognition: typeof SpeechRecognition;
-//     webkitSpeechRecognition: typeof SpeechRecognition;
-//     AudioContext: typeof AudioContext;
-//     webkitAudioContext: typeof AudioContext;
-//   }
-// }
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+    AudioContext: typeof AudioContext;
+    webkitAudioContext: typeof AudioContext;
+  }
+}
 
 export default AgentDetails;
