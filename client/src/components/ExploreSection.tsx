@@ -153,7 +153,7 @@ const ExploreSection = () => {
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/creative-SW6QDQbcVuwPgb6a2CYtYmRbsJa4k1.png"
                 alt="Aurora Dashboard"
-                className="w-full filter grayscale contrast-125 brightness-110 mix-blend-multiply"
+                className="w-full filter contrast-125 brightness-110 mix-blend-multiply"
               />
             </div>
           </motion.div>

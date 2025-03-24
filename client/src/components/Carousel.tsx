@@ -26,7 +26,8 @@ const features = [
   },
   {
     title: "Tracker",
-    description: "Get best insights on projects and Tokens through our AI Tracking mechanism, copy profitable wallets and track investments across multiple chains.",
+    description:
+      "Get best insights on projects and Tokens through our AI Tracking mechanism, copy profitable wallets and track investments across multiple chains.",
     icon: "🔍",
   },
 ];
@@ -41,20 +42,20 @@ export default function FeatureCarousel() {
     if (carousel.current) {
       setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
     }
-    
+
     // Start the automatic animation
     const startAutoScroll = async () => {
       await controls.start({
         x: -width,
-        transition: { 
-          duration: 25, 
+        transition: {
+          duration: 25,
           ease: "linear",
           repeat: Infinity,
-          repeatType: "loop" 
-        }
+          repeatType: "loop",
+        },
       });
     };
-    
+
     if (width > 0) {
       startAutoScroll();
     }
@@ -64,21 +65,24 @@ export default function FeatureCarousel() {
     // Resume the animation after drag ends
     controls.start({
       x: -width,
-      transition: { 
-        duration: 25, 
+      transition: {
+        duration: 25,
         ease: "linear",
         repeat: Infinity,
-        repeatType: "loop" 
-      }
+        repeatType: "loop",
+      },
     });
   };
 
   return (
     <div className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto relative">
         <h2 className="text-3xl font-bold text-center mb-12 text-black font-montserrat">
           Why Choose Us
         </h2>
+        {/* Add fade effect similar to marquee */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white z-10" />
+        
         <motion.div ref={carousel} className="cursor-grab overflow-hidden">
           <motion.div
             drag="x"
@@ -93,10 +97,10 @@ export default function FeatureCarousel() {
               <motion.div
                 key={index}
                 className="min-w-[300px] h-[400px] p-8 m-4 bg-black rounded-3xl shadow-lg flex flex-col justify-between transition-all duration-300 ease-in-out border-2 border-black group"
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   zIndex: 10,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
               >
                 <div>
@@ -118,16 +122,16 @@ export default function FeatureCarousel() {
                 </div>
               </motion.div>
             ))}
-            
+
             {/* Duplicate the features to create a seamless loop */}
             {features.map((feature, index) => (
               <motion.div
                 key={`duplicate-${index}`}
                 className="min-w-[300px] h-[400px] p-8 m-4 bg-black rounded-3xl shadow-lg flex flex-col justify-between transition-all duration-300 ease-in-out border-2 border-black group"
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   zIndex: 10,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
               >
                 <div>

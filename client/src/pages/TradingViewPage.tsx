@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TradingViewWidget from "./TradingView";
-import { useNavigate } from "react-router";
 
 // Define types for market data
 interface MarketDataItem {
@@ -76,7 +75,7 @@ type Theme = "light" | "dark";
 const TradingViewPage: React.FC = () => {
     const [selectedSymbol, setSelectedSymbol] = useState<string>("APTUSD");
     const [resolution, setResolution] = useState<string>("D");
-    const [theme, setTheme] = useState<Theme>("light");
+    const [theme] = useState<Theme>("light");
     const [activeStudies, setActiveStudies] = useState<string[]>([]);
     const [showWatchlist, setShowWatchlist] = useState<boolean>(true);
 
