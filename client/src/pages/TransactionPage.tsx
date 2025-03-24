@@ -43,8 +43,8 @@ const TradingPage = () => {
         <div className="min-h-screen bg-background">
             <main className="container mx-auto p-4 space-y-8">
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-4xl font-bold tracking-tight">Trading Markets</h1>
-                    <p className="text-muted-foreground">View and interact with available trading markets</p>
+                    <h1 className="text-4xl font-bold tracking-tight">Echelon Markets</h1>
+                    <p className="text-muted-foreground">View and interact with available Echelon Markets</p>
                 </div>
 
                 {loading ? (
