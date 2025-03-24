@@ -1,6 +1,39 @@
 # Aurora: Personal Agent Companion on Aptos
 
-Aurora is a next-generation personal agent companion built on the Aptos blockchain, designed to empower users with a unified interface for managing their financial activities seamlessly. Leveraging the power of the Move Agent Kit, Aurora combines cutting-edge DeFi functionalities, real-time market insights, and secure payment solutions to create a one-stop platform for transacting, trading, and utility management.
+Aurora is a next-generation personal agent companion built on the Aptos blockchain, designed to empower users with a unified interface for managing their financial activities seamlessly. Leveraging the power of the Move Agent Kit and Echelon Markets, Aurora provides a comprehensive DeFi solution.
+
+## The Problem It Solves
+
+In the DeFi ecosystem, users face challenges navigating multiple platforms to access liquidity pools, manage positions, and execute transactions. Aurora solves this by providing a unified interface powered by Echelon Markets integration.
+
+## Key Features & Implementation
+
+### Echelon Markets Integration
+```typescript:d%3A%5Cplutusmain%5CPlutus_move%5Cclient%5Csrc%5Cservices%5Cechelon.ts
+interface EchelonPool {
+  poolId: string;
+  apr: number;
+  totalLiquidity: string;
+  utilizationRate: number;
+}
+
+class EchelonService {
+  private readonly API_BASE = 'https://api.echelon.markets';
+  
+  async getPoolDetails(poolId: string): Promise<EchelonPool> {
+    const response = await fetch(`${this.API_BASE}/pools/${poolId}`);
+    return response.json();
+  }
+
+  async executeTransaction(type: 'supply' | 'borrow' | 'repay', params: any) {
+    const signer = new LocalSigner(account, Network.TESTNET);
+    const aptosAgent = new AgentRuntime(signer, aptos, {
+      ECHELON_API_KEY: process.env.ECHELON_API_KEY,
+    });
+    return await aptosAgent.execute(type, params);
+  }
+}
+```
 
 ## Key Features
 
