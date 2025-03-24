@@ -9,9 +9,6 @@ import Home from "./pages/Home";
 import { LoginCallBack } from "@opencampus/ocid-connect-js";
 import { toast } from "sonner";
 
-import { Button } from "./components/ui/button";
-import { Buffer } from 'buffer';
-
 
 function App() {
   const navigate = useNavigate();

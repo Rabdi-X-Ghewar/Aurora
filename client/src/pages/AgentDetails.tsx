@@ -8,23 +8,57 @@ import { Label } from "../components/ui/label";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import {
-  StakingAssetsCard,
-  ProvidersCard,
-  AgentDetailsCard,
-  AgentsListCard,
-  EthereumMetricsCard,
-  ErrorCard,
-  TravelTicketCard,
-  HotelBookingCard
-  
-} from "../components/ui/AgentCards";
+
+// Add proper type definitions for Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+    AudioContext: typeof AudioContext;
+    webkitAudioContext: typeof AudioContext;
+  }
+}
+
+// Add SpeechRecognition interface
+interface SpeechRecognitionResult {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: SpeechRecognitionResult[];
+  length: number;
+  item(index: number): SpeechRecognitionResult[];
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+  message: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: SpeechRecognitionErrorEvent) => void;
+  onend: () => void;
+}
+
+import { StakingAssetsCard, ProvidersCard, AgentDetailsCard, AgentsListCard, EthereumMetricsCard, ErrorCard, TravelTicketCard, HotelBookingCard } from "../components/ui/AgentCards";
 import { Message } from "../types/AgentInterfaces";
 // import { StakingCard } from "../components/ui/StakingCard";
 import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
 import { createPublicClient, http } from "viem";
-import { holesky } from "viem/chains";
-import { Window } from "../types/speech";
+import { holesky } from "viem/chains"; 
 const PLUTUS_ASCII = `
 ██████╗ ██╗     ██╗   ██╗████████╗██╗   ██╗███████╗
 ██╔══██╗██║     ██║   ██║╚══██╔══╝██║   ██║██╔════╝
@@ -85,25 +119,25 @@ const AgentDetails: React.FC = () => {
   }, [messages]);
 
   // Initialize Speech Recognition
-  // Initialize Speech Recognition
   useEffect(() => {
-    if (
-      (typeof window !== "undefined" && "SpeechRecognition" in window) ||
-      "webkitSpeechRecognition" in window
-    ) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-      speechRecognitionRef.current = new SpeechRecognition();
+  if (
+    (typeof window !== "undefined" && "SpeechRecognition" in window) ||
+    "webkitSpeechRecognition" in window
+  ) {
+    const SpeechRecognitionConstructor =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    speechRecognitionRef.current = new SpeechRecognitionConstructor();
+    
+    if (speechRecognitionRef.current) {
       speechRecognitionRef.current.continuous = true;
       speechRecognitionRef.current.interimResults = true;
       speechRecognitionRef.current.lang = "en-In";
 
-      speechRecognitionRef.current.onresult = (event) => {
+      speechRecognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = Array.from(event.results)
           .map((result) => result[0])
           .map((result) => result.transcript)
           .join("");
-
         setInput(transcript);
 
         // Reset silence timeout on speech
@@ -120,7 +154,7 @@ const AgentDetails: React.FC = () => {
         }, 1500); // Detect 1.5 seconds of silence
       };
 
-      speechRecognitionRef.current.onerror = (event) => {
+      speechRecognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error("Speech recognition error", event.error);
         setIsListening(false);
       };
@@ -134,7 +168,7 @@ const AgentDetails: React.FC = () => {
       }
       stopListening();
     };
-  }, []);
+    }}, []);
   // Set provider
   useEffect(() => {
     const setProvider = async () => {
@@ -176,13 +210,13 @@ const AgentDetails: React.FC = () => {
     // Connect to WebSocket
     ws.current = new WebSocket("ws://localhost:3000");
 
-    ws.current.onmessage = (event) => {
+    ws.current.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
       console.log("data", data);
 
       switch (data.type) {
         case "message":
-          const newMessage = {
+          const newMessage: Message = {
             type: "ai",
             content: data.content,
             timestamp: new Date(data.timestamp),
@@ -496,7 +530,7 @@ const AgentDetails: React.FC = () => {
     setMessages((prev) => [
       ...prev,
       {
-        type: "user",
+        type: "user" as const,
         content: message,
         timestamp: new Date(),
       },
@@ -900,15 +934,5 @@ const AgentDetails: React.FC = () => {
     </div>
   );
 };
-
-// // Add types for the Web Speech API if they don't exist in the global namespace
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-    AudioContext: typeof AudioContext;
-    webkitAudioContext: typeof AudioContext;
-  }
-}
 
 export default AgentDetails;
