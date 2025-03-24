@@ -12,23 +12,27 @@ const ExploreSection = () => {
       className: "text-black text-3xl font-montserrat", 
     },
     {
-      text: "All",
+      text: "PERSONAL",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "DEFI",
+      text: "AGENT",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "Tooling",
+      text: "COMPANION",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "with",
+      text: "ON",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "PLUTUS",
+      text: "APTOS",
+      className: "text-black text-3xl font-montserrat",
+    },
+    {
+      text: "AURORA",
       className: "text-black text-4xl font-montserrat font-bold",
     },
   ];
@@ -52,10 +56,8 @@ const ExploreSection = () => {
             </div>
 
             <p className="mt-8 text-lg leading-relaxed font-montserrat border border-black p-6 rounded-2xl">
-              Your One stop platform for all DEFI actions. Get AI
-              recommendations on best APY, Stake with any asset, get rewarded in
-              $EDU tokens, Use any onchain asset to do your onchain
-              transactions.
+            Aurora: Your All-in-One Personal Agent on Aptos. Seamlessly manage wallets, 
+            trade with Echelon and Joule Finance, and make utility payments—all in one intuitive interface.
             </p>
 
             <div className="mt-12 flex flex-col sm:flex-row gap-6">
@@ -83,7 +85,7 @@ const ExploreSection = () => {
             <div className="bg-white rounded-2xl  overflow-hidden">
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/creative-SW6QDQbcVuwPgb6a2CYtYmRbsJa4k1.png"
-                alt="Plutus Dashboard"
+                alt="Aurora Dashboard"
                 className="w-full filter grayscale contrast-125 brightness-110 mix-blend-multiply"
               />
             </div>
@@ -146,7 +148,7 @@ const ExploreSection = () => {
           </h2>
           <p className="text-xl font-montserrat max-w-2xl mx-auto mb-12">
             Join thousands of users already transforming their financial future
-            with Plutus.
+            with Aurora.
           </p>
           <button
             onClick={Login}

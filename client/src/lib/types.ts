@@ -29,3 +29,4 @@ export interface ClaimableReward {
 export interface TransactionPayload {
     payload: any;
 }
+

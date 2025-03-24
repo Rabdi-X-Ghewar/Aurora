@@ -6,9 +6,10 @@ import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar"
 import Profile from "./Profile"
 import WalletTracker from "./WalletTracker"
 import SavedWalletsPage from "./SavedWalletsPage"
-import TransactionPage from "./Transactions"
 import AgentDetails from "./AgentDetails"
 import TradingViewPage from "./TradingViewPage"
+import Transactions from "./Transactions"
+import TradingPage from "./TransactionPage"
 
 const HomeAfterLogin = () => {
     return (
@@ -21,9 +22,9 @@ const HomeAfterLogin = () => {
                             <SidebarTrigger />
                             <div className="flex items-center gap-2 mr-4">
                                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                                    <span className="text-lg font-bold text-primary-foreground">P</span>
+                                    <span className="text-lg font-bold text-primary-foreground">A</span>
                                 </div>
-                                <span className="font-semibold text-xl">Pluto</span>
+                                <span className="font-semibold text-xl">Aurora</span>
                             </div>
                             <MainNav />
                         </div>
@@ -34,10 +35,11 @@ const HomeAfterLogin = () => {
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/watcher" element={<WalletTracker />} />
                             <Route path="/saved-wallets" element={<SavedWalletsPage />} />
-                            <Route path="/transactions" element={<TransactionPage />} />
+                            <Route path="/transactions" element={<Transactions />} />
                             <Route path="/chat-bot" element={<AgentDetails />} />
                             <Route path="/trading-view" element={<TradingViewPage />} />
-                        </Routes>
+                            <Route path="/trading" element={<TradingPage />} />
+                        </Routes> 
                     </main>
                 </div>
             </div>
