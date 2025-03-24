@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Market } from '../lib/types';
 import { getMarkets } from '../apiClient';
 import { toast } from 'sonner'
@@ -55,7 +55,7 @@ const TradingPage = () => {
                     <>
                         <section>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {markets.map((market) => (
+                                {markets && markets.map((market) => (
                                     <MarketCard
                                         key={market.id}
                                         market={market}

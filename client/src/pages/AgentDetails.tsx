@@ -19,14 +19,13 @@ import {
   HotelBookingCard
   
 } from "../components/ui/AgentCards";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Message } from "../types/AgentInterfaces";
 // import { StakingCard } from "../components/ui/StakingCard";
 import { LidoSDK, LidoSDKCore } from "@lidofinance/lido-ethereum-sdk";
 import { createPublicClient, http } from "viem";
 import { holesky } from "viem/chains";
 
-const PLUTUS_ASCII = `
+const Aurora_ASCII = `
 ██████╗ ██╗     ██╗   ██╗████████╗██╗   ██╗███████╗
 ██╔══██╗██║     ██║   ██║╚══██╔══╝██║   ██║██╔════╝
 ██████╔╝██║     ██║   ██║   ██║   ██║   ██║███████╗
@@ -39,7 +38,7 @@ type PoolOption = {
   address: string;
 };
 
-// Add this constant after PLUTUS_ASCII
+// Add this constant after Aurora_ASCII
 const POOL_OPTIONS: PoolOption[] = [
   { name: "Amnis Aptos Coin", address: "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::amapt_token::AmnisApt*" },
   { name: "Wrapped Ether", address: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::WETH" },
@@ -562,7 +561,7 @@ const AgentDetails: React.FC = () => {
     if (msg.type === "user") {
       return (
         <div className="font-mono text-black/90">
-          <span className="text-black/30">user@plutus</span>
+          <span className="text-black/30">user@Aurora</span>
           <span className="text-black/70">:~$</span>
           <span className="ml-2">{msg.content}</span>
         </div>
@@ -570,7 +569,7 @@ const AgentDetails: React.FC = () => {
     } else {
       return (
         <div className="font-mono">
-          <span className="text-black/70">plutus@ai</span>
+          <span className="text-black/70">Aurora@ai</span>
           <span className="text-black/30">:~$</span>
           <div className="mt-1 text-black/90 pl-4">
             <ReactMarkdown
@@ -615,7 +614,7 @@ const AgentDetails: React.FC = () => {
               className="text-black text-xs font-mono whitespace-pre select-none"
               style={{ textShadow: "0 0 1px rgba(0, 0, 0, 0.2)" }}
             >
-              {PLUTUS_ASCII}
+              {Aurora_ASCII}
             </pre>
             <Button
               variant="ghost"
@@ -683,8 +682,8 @@ const AgentDetails: React.FC = () => {
                 </div>
                 <div className="text-black/30 font-mono text-xs">
                   {voiceMode
-                    ? "Say something to interact with Plutus AI"
-                    : "Start typing to interact with Plutus AI"}
+                    ? "Say something to interact with Aurora AI"
+                    : "Start typing to interact with Aurora AI"}
                 </div>
               </div>
             )}
@@ -742,7 +741,7 @@ const AgentDetails: React.FC = () => {
         ) : (
           <div className="border-t border-black/20 bg-white p-4">
             <div className="flex items-center gap-2 font-mono text-black bg-white rounded-lg p-2 border-2 border-black focus-within:border-black transition-colors">
-              <span className="text-black font-bold">user@plutus</span>
+              <span className="text-black font-bold">user@Aurora</span>
               <span className="text-black/70">:~$</span>
               <Input
                 placeholder="Type your command..."

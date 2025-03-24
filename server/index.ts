@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 
 app.get('/', (req: Request, res: Response) => {
-    res.json({ message: 'Plutus Backend' });
+    res.json({ message: 'Aurora Backend' });
 });
 
 

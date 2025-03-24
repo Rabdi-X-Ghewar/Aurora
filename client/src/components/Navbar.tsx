@@ -11,7 +11,7 @@ const Navbar = () => {
                             <Wallet className="h-8 w-8 text-black" />
                         </div>
                         <span className="ml-2 text-2xl font-bold text-black font-montserrat">
-                            PLUTUS
+                            Aurora
                         </span>
                     </div>
                     <div className="flex items-center space-x-8">

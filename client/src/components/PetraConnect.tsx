@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { WalletIcon } from "lucide-react";
 
 const WalletConnectButton = () => {
-  const { connect, disconnect, account, connected, wallet } = useWallet();
+  const { connect, disconnect, account, connected } = useWallet();
 
   const handleConnect = async () => {
     try {

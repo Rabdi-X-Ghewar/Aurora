@@ -7,7 +7,7 @@ import { WalletBalance } from "../../lib/types";
 import { toast } from "sonner";
 
 const AptosWallet = () => {
-    const { account, connected, wallets } = useWallet()
+    const { account, connected } = useWallet()
     const [balance, setBalance] = useState<number | null>(null)
 
 

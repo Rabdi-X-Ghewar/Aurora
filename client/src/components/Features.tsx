@@ -14,7 +14,7 @@ export default function Features() {
             Advanced DeFi Management
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
-            Plutus combines AI-powered insights with cross-chain capabilities.
+            Aurora combines AI-powered insights with cross-chain capabilities.
             Manage your DeFi operations seamlessly across Sonic and other
             networks with our intelligent agent system.
           </p>

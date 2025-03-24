@@ -127,7 +127,7 @@ const Transactions = () => {
     const [selectedNetwork, setSelectedNetwork] = useState<string>("sepolia");
     const [hasMoreTransactions, setHasMoreTransactions] = useState<boolean>(true);
     const [lastVersion, setLastVersion] = useState<string | undefined>(undefined);
-    const [transactionCount, setTransactionCount] = useState<number>(0);
+    const [, setTransactionCount] = useState<number>(0);
     
     const { wallets } = useWallets();
     const { user } = usePrivy();

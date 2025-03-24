@@ -5,13 +5,13 @@ const features = [
   {
     title: "AI-Powered Staking Assistant",
     description:
-      "Maximize your staking rewards with AI-driven recommendations. Plutus analyzes protocols, APYs, risks, and lock-up periods to suggest the best staking strategies tailored to your goals.",
+      "Maximize your staking rewards with AI-driven recommendations. Aurora analyzes protocols, APYs, risks, and lock-up periods to suggest the best staking strategies tailored to your goals.",
     icon: "✨",
   },
   {
     title: " Unified Cross-Chain Dashboard",
     description:
-      "Track all your assets in one place. Plutus aggregates balances, staking rewards, and governance participation across multiple blockchains like Ethereum, Solana, and Polygon.",
+      "Track all your assets in one place. Aurora aggregates balances, staking rewards, and governance participation across multiple blockchains like Ethereum, Solana, and Polygon.",
     icon: "📱",
   },
   {

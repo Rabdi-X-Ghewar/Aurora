@@ -19,11 +19,7 @@ import {
 const ExploreSection = () => {
   const words = [
     {
-      text: "Do",
-      className: "text-black text-3xl font-montserrat",
-    },
-    {
-      text: "PERSONAL",
+      text: "Your",
       className: "text-black text-3xl font-montserrat",
     },
     {
@@ -39,12 +35,8 @@ const ExploreSection = () => {
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "APTOS",
+      text: "Aptos",
       className: "text-black text-3xl font-montserrat",
-    },
-    {
-      text: "AURORA",
-      className: "text-black text-4xl font-montserrat font-bold",
     },
   ];
 

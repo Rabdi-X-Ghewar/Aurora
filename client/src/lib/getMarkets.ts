@@ -1,5 +1,5 @@
 import { EchelonClient } from "@echelonmarket/echelon-sdk";
-import { Account, Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 
 
 async function getMarkets() {
