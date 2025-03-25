@@ -175,7 +175,7 @@ const AgentDetails: React.FC = () => {
       if (embeddedWallet) {
         try {
           const response = await fetch(
-            "http://localhost:3000/api/set-provider",
+            "https://plutus-move-agent.onrender.com/api/set-provider",
             {
               method: "POST",
               headers: {
@@ -208,7 +208,7 @@ const AgentDetails: React.FC = () => {
   // WebSocket connection
   useEffect(() => {
     // Connect to WebSocket
-    ws.current = new WebSocket("ws://localhost:3000");
+    ws.current = new WebSocket("https://plutus-move-agent.onrender.com");
 
     ws.current.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);

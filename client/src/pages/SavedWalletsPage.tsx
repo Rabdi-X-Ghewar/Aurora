@@ -81,7 +81,7 @@ const SavedWalletsPage = () => {
     useEffect(() => {
         fetchSavedWallets()
             // Set email in server
-            fetch('http://localhost:3000/api/set-email', {
+            fetch('https://plutus-move-agent.onrender.com/api/set-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
