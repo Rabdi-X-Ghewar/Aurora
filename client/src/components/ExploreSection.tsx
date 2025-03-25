@@ -107,109 +107,65 @@ const ExploreSection = () => {
   return (
     <div className="bg-white text-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative z-0 flex min-h-[80vh] w-full flex-col items-center justify-center overflow-hidden rounded-md bg-background">
-        {/* Gradient Background */}
-        <div className="absolute top-0 isolate z-0 flex w-screen flex-1 items-start justify-center">
-          {/* Main Glow */}
-          <div className="absolute inset-auto z-50 h-36 w-[28rem] -translate-y-[-30%] rounded-full bg-primary/60 opacity-80 blur-3xl" />
-
-          {/* Lamp Effect */}
+      <div className="container mx-auto px-6 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
-            initial={{ width: "8rem" }}
-            viewport={{ once: true }}
-            transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-            whileInView={{ width: "16rem" }}
-            className="absolute top-0 z-30 h-36 -translate-y-[20%] rounded-full bg-primary/60 blur-2xl"
-          />
-
-          {/* Top Line */}
-          <motion.div
-            initial={{ width: "15rem" }}
-            viewport={{ once: true }}
-            transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-            whileInView={{ width: "30rem" }}
-            className="absolute inset-auto z-50 h-0.5 -translate-y-[-10%] bg-primary/60"
-          />
-
-          {/* Left Gradient Cone */}
-          <motion.div
-            initial={{ opacity: 0.5, width: "15rem" }}
-            whileInView={{ opacity: 1, width: "30rem" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            style={{
-              backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-            }}
-            className="absolute inset-auto right-1/2 h-56 overflow-visible w-[30rem] bg-gradient-conic from-primary/60 via-transparent to-transparent [--conic-position:from_70deg_at_center_top]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="absolute w-[100%] left-0 bg-background h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
-            <div className="absolute w-40 h-[100%] left-0 bg-background bottom-0 z-20 [mask-image:linear-gradient(to_right,white,transparent)]" />
+            <h2 className="text-black font-montserrat text-2xl font-light mb-4 border-b border-black pb-2 inline-block">
+              WELCOME TO THE FUTURE
+            </h2>
+
+            <div className="mt-6">
+              <TypewriterEffectSmooth words={words} />
+            </div>
+
+            <p className="mt-8 text-lg leading-relaxed font-montserrat border border-black p-6 rounded-2xl">
+              Aurora: Your All-in-One Personal Agent on Aptos. Seamlessly manage wallets,
+              trade with Echelon and Joule Finance, and make utility payments—all in one intuitive interface.
+            </p>
+
+            <div className="mt-12 flex flex-col sm:flex-row gap-6">
+              <button
+                onClick={Login}
+                className="px-8 py-4 bg-black text-white font-montserrat font-bold text-lg transition-transform hover:scale-105 rounded-full"
+              >
+                LOGIN TO DASHBOARD
+              </button>
+              <a
+                href="#"
+                className="px-8 py-4 border border-black text-black font-montserrat text-lg flex items-center justify-center sm:justify-start gap-2 transition-transform hover:scale-105 rounded-full"
+              >
+                LEARN MORE <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
           </motion.div>
 
-          {/* Right Gradient Cone */}
           <motion.div
-            initial={{ opacity: 0.5, width: "15rem" }}
-            whileInView={{ opacity: 1, width: "30rem" }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            style={{
-              backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
-            }}
-            className="absolute inset-auto left-1/2 h-56 w-[30rem] bg-gradient-conic from-transparent via-transparent to-primary/60 [--conic-position:from_290deg_at_center_top]"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative"
           >
-            <div className="absolute w-40 h-[100%] right-0 bg-background bottom-0 z-20 [mask-image:linear-gradient(to_left,white,transparent)]" />
-            <div className="absolute w-[100%] right-0 bg-background h-40 bottom-0 z-20 [mask-image:linear-gradient(to_top,white,transparent)]" />
+            <div className="bg-white rounded-2xl overflow-hidden">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/creative-SW6QDQbcVuwPgb6a2CYtYmRbsJa4k1.png"
+                alt="Aurora Dashboard"
+                className="w-full filter contrast-125 brightness-110 mix-blend-multiply"
+              />
+            </div>
           </motion.div>
         </div>
-
-        {/* Content */}
-        <motion.div
-          initial={{ y: 100, opacity: 0.5 }}
-          viewport={{ once: true }}
-          transition={{ ease: "easeInOut", delay: 0.3, duration: 0.8 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          className="relative z-50 container flex justify-center flex-1 flex-col px-5 md:px-10 gap-4 -translate-y-20 text-center"
-        >
-          <h2 className="text-2xl font-light border-b border-black pb-2 inline-block">
-            WELCOME TO THE FUTURE
-          </h2>
-
-          <div className="mt-6">
-            <TypewriterEffectSmooth words={words} />
-          </div>
-
-          <p className="mt-8 text-lg leading-relaxed max-w-2xl mx-auto border border-black p-6 rounded-2xl">
-            Aurora: Your All-in-One Personal Agent on Aptos. Seamlessly manage wallets,
-            trade with Echelon and Joule Finance, and make utility payments—all in one intuitive interface.
-          </p>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-6 justify-center">
-            <button
-              onClick={Login}
-              className="px-8 py-4 bg-black text-white font-bold text-lg transition-transform hover:scale-105 rounded-full"
-            >
-              LOGIN TO DASHBOARD
-            </button>
-            <a
-              href="#"
-              className="px-8 py-4 border border-black text-black flex items-center justify-center gap-2 transition-transform hover:scale-105 rounded-full"
-            >
-              LEARN MORE <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-        </motion.div>
-      </section>
+      </div>
 
       {/* Features Section - Updated with BentoGrid */}
       <div className="bg-white text-black py-24">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16">KEY FEATURES</h2>
+          <h2 className="text-4xl font-montserrat font-bold text-center mb-16">
+            KEY FEATURES
+          </h2>
 
           <BentoGrid className="lg:grid-rows-3">
             {features.map((feature) => (
@@ -226,15 +182,17 @@ const ExploreSection = () => {
       {/* CTA Section */}
       <div className="bg-white text-black py-24 border-t border-black">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-8">READY TO GET STARTED?</h2>
-          <p className="text-xl max-w-2xl mx-auto mb-12">
+          <h2 className="text-4xl font-montserrat font-bold mb-8">
+            READY TO GET STARTED?
+          </h2>
+          <p className="text-xl font-montserrat max-w-2xl mx-auto mb-12">
             Join thousands of users already transforming their financial future
             with Aurora.
           </p>
           <Button
             size="lg"
             onClick={Login}
-            className="px-12 py-5 bg-black text-white font-bold text-lg transition-transform hover:scale-105 rounded-full"
+            className="px-12 py-5 bg-black text-white font-montserrat font-bold text-lg transition-transform hover:scale-105 rounded-full"
           >
             START NOW
           </Button>
