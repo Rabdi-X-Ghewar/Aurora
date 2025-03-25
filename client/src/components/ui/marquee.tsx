@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
+import m1 from "../../assets/m1.jpg";
+import m2 from "../../assets/m2.jpg";
+import m3 from "../../assets/m3.jpg";
+import m4 from "../../assets/m4.jpg";
 
 export default function Marquee() {
   // Add your logo imports or paths
   const logos = [
-    "m1.jpg",
-    "m2.jpg",
-    "m3.jpg",
-    "m4.jpg",
+    m1,m2,m3,m4
   ];
 
   return (
