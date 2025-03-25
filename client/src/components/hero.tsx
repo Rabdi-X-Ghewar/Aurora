@@ -2,7 +2,22 @@ import * as React from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Link } from "react-router"
+
+interface HeroProps extends React.HTMLAttributes<HTMLElement> {
+  gradient?: boolean
+  blur?: boolean
+  title: string
+  subtitle?: string
+  actions?: Array<{
+    label: string
+    href: string
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+  }>
+  titleClassName?: string
+  subtitleClassName?: string
+  actionsClassName?: string
+}
 
 const Hero = React.forwardRef<HTMLElement, HeroProps>(
   (
@@ -128,7 +143,7 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
                     variant={action.variant || "default"}
                     asChild
                   >
-                    <Link href={action.href}>{action.label}</Link>
+                    <Link to={action.href}>{action.label}</Link>
                   </Button>
                 ))}
               </div>
