@@ -23,20 +23,20 @@ const ExploreSection = () => {
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "AGENT",
+      text: "Personal",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "COMPANION",
+      text: "DEFI",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "ON",
+      text: "Companion",
       className: "text-black text-3xl font-montserrat",
     },
     {
-      text: "Aptos",
-      className: "text-black text-3xl font-montserrat",
+      text: "AURORA",
+      className: "text-black text-bold text-3xl font-montserrat",
     },
   ];
 
@@ -46,7 +46,7 @@ const ExploreSection = () => {
       Icon: Sparkles,
       name: "SMART TRADING",
       description:
-        "Advanced trading tools with real-time analytics for optimal performance.",
+        "Advanced trading tools with real-time analytics for optimal performance using pool markets from Echelon and Joule Finance by the powers of Metamove.",
       href: "#",
       cta: "Learn More",
       background: (
@@ -70,7 +70,7 @@ const ExploreSection = () => {
       Icon: Layers,
       name: "MULTI-CHAIN SUPPORT",
       description:
-        "Support for all major blockchain networks in one unified platform.",
+        "Support for all major blockchain networks in one unified platform including Aptos and other major chains.",
       href: "#",
       cta: "Learn More",
       background: (
@@ -82,7 +82,7 @@ const ExploreSection = () => {
       Icon: CalendarIcon,
       name: "SCHEDULED PAYMENTS",
       description:
-        "Automate utility payments and recurring transactions with ease on Aptos.",
+        "Automate utility payments and recurring transactions with ease on Aptos by saving wallets and voice enabled transactions.",
       href: "#",
       cta: "Learn More",
       background: (
