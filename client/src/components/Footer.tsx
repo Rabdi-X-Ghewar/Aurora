@@ -76,10 +76,10 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-semibold">Contact Us</h3>
             <address className="not-italic text-muted-foreground">
-              <p>123 Innovation Street</p>
-              <p>Tech City, TC 12345</p>
+              <p>Sitapura Industrial Area</p>
+              <p>Jaipur, TC 12345</p>
               <p>Phone: (123) 456-7890</p>
-              <p>Email: hello@example.com</p>
+              <p>Email: madscientistdata@gmail.com</p>
             </address>
           </div>
 
@@ -132,7 +132,7 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>© 2024 Aurora - Your Personal Agent Companion on Aptos. All rights reserved.</p>
+          <p>© 2025 Aurora - Your Personal Agent Companion on Aptos. All rights reserved.</p>
           <nav className="flex gap-4">
             {[
               "Privacy Policy",
