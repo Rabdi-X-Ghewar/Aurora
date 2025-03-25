@@ -129,10 +129,9 @@ const ExploreSection = () => {
 
             <div className="mt-12 flex flex-col sm:flex-row gap-6">
               <button
-                onClick={Login}
                 className="px-8 py-4 bg-black text-white font-montserrat font-bold text-lg transition-transform hover:scale-105 rounded-full"
               >
-                LOGIN TO DASHBOARD
+                <Login name="Login to Dahsboard" />
               </button>
               <a
                 href="#"
@@ -191,10 +190,9 @@ const ExploreSection = () => {
           </p>
           <Button
             size="lg"
-            onClick={Login}
             className="px-12 py-5 bg-black text-white font-montserrat font-bold text-lg transition-transform hover:scale-105 rounded-full"
           >
-            START NOW
+            <Login name="Start Now" />
           </Button>
         </div>
       </div>

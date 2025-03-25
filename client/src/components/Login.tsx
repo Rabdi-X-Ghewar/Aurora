@@ -6,7 +6,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { addUserToDatabase } from "../apiClient";
 
-export default function Login() {
+export default function Login({
+    name
+}: {
+    name: string
+}) {
     const { createWallet } = useCreateWallet();
     const navigate = useNavigate();
 
@@ -40,7 +44,7 @@ export default function Login() {
                 (
                     <Button className="px-6 py-2 bg-black text-white rounded-full hover:bg-white hover:text-black transition-colors"
                         onClick={login}>
-                        Log In
+                        {name}
                     </Button>
                 )}
 
